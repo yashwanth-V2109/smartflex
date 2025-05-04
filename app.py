@@ -148,27 +148,33 @@ def calculate_angle(a, b, c):
 
 def detect_exercise(landmarks, workout_type):
     """Detect exercise based on pose landmarks and workout type."""
-    if workout_type == "bicep_curl":
-        # Get coordinates for bicep curl
-        try:
+    try:
+        if workout_type == "bicep_curl":
+            # Get coordinates for both arms
             left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                           landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                          landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                          landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
             
-            # Calculate angle
-            angle = calculate_angle(left_shoulder, left_elbow, left_wrist)
+            right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                            landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                          landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                          landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
             
-            # Count rep when angle is less than 30 degrees (arm is curled)
-            return angle < 30
-        except:
-            return False
-    
-    elif workout_type == "squat":
-        # Get coordinates for squat
-        try:
+            # Calculate angles for both arms
+            left_angle = calculate_angle(left_shoulder, left_elbow, left_wrist)
+            right_angle = calculate_angle(right_shoulder, right_elbow, right_wrist)
+            
+            # Count rep when either arm is curled (angle < 30 degrees)
+            # and the other arm is extended (angle > 160 degrees)
+            return (left_angle < 30 and right_angle > 160) or (right_angle < 30 and left_angle > 160)
+        
+        elif workout_type == "squat":
+            # Get coordinates for both legs
             left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                        landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
             left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
@@ -176,33 +182,54 @@ def detect_exercise(landmarks, workout_type):
             left_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,
                          landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
             
-            # Calculate angle
-            angle = calculate_angle(left_hip, left_knee, left_ankle)
+            right_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
+                        landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+            right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
+                         landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+            right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
+                          landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
             
-            # Count rep when angle is less than 100 degrees (squat position)
-            return angle < 100
-        except:
-            return False
-    
-    elif workout_type == "pushup":
-        # Get coordinates for pushup
-        try:
+            # Calculate angles for both legs
+            left_angle = calculate_angle(left_hip, left_knee, left_ankle)
+            right_angle = calculate_angle(right_hip, right_knee, right_ankle)
+            
+            # Count rep when both knees are bent (angle < 100 degrees)
+            # and hips are below knees (checking y-coordinates)
+            return (left_angle < 100 and right_angle < 100 and 
+                   left_hip[1] > left_knee[1] and right_hip[1] > right_knee[1])
+        
+        elif workout_type == "pushup":
+            # Get coordinates for both arms
             left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                           landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                          landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                          landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
             
-            # Calculate angle
-            angle = calculate_angle(left_shoulder, left_elbow, left_wrist)
+            right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                            landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                          landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                          landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
             
-            # Count rep when angle is less than 90 degrees (pushup position)
-            return angle < 90
-        except:
-            return False
-    
-    return False
+            # Calculate angles for both arms
+            left_angle = calculate_angle(left_shoulder, left_elbow, left_wrist)
+            right_angle = calculate_angle(right_shoulder, right_elbow, right_wrist)
+            
+            # Count rep when both arms are bent (angle < 90 degrees)
+            # and body is parallel to ground (checking shoulder and hip alignment)
+            left_hip = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y
+            right_hip = landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y
+            shoulder_hip_alignment = abs(left_shoulder[1] - left_hip) < 0.1 and abs(right_shoulder[1] - right_hip) < 0.1
+            
+            return (left_angle < 90 and right_angle < 90 and shoulder_hip_alignment)
+        
+        return False
+    except Exception as e:
+        print(f"Error in exercise detection: {str(e)}")
+        return False
 
 def workout_monitoring(workout_type):
     """Monitor workout using OpenCV and MediaPipe."""
@@ -227,10 +254,9 @@ def workout_monitoring(workout_type):
     print(f"Camera resolution: {width}x{height}")
     
     # Initialize pose with static images mode off for video
-    # Using specific settings to address the NORM_RECT warning
     with mp_pose.Pose(
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5,
+        min_detection_confidence=0.7,  # Increased confidence threshold
+        min_tracking_confidence=0.7,   # Increased tracking confidence
         model_complexity=1,
         static_image_mode=False,
         enable_segmentation=False,
@@ -241,6 +267,8 @@ def workout_monitoring(workout_type):
         rep_count = 0
         stage = None
         start_time = time.time()
+        last_rep_time = time.time()
+        rep_cooldown = 1.0  # Minimum time between reps in seconds
         
         while is_workout_running and cap.isOpened():
             ret, frame = cap.read()
@@ -261,7 +289,6 @@ def workout_monitoring(workout_type):
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             
             # Process the frame with MediaPipe Pose
-            # Using a dictionary to provide image dimensions, addressing the NORM_RECT warning
             results = pose.process(frame_rgb)
             
             # Set the frame to writeable again to modify it
@@ -283,15 +310,17 @@ def workout_monitoring(workout_type):
                 # Get landmarks
                 landmarks = results.pose_landmarks.landmark
                 
-                # Detect exercise
+                # Detect exercise with cooldown
+                current_time = time.time()
                 is_rep = detect_exercise(landmarks, workout_type)
                 
-                # Count reps
-                if is_rep and stage == None:
+                # Count reps with cooldown
+                if is_rep and stage == None and (current_time - last_rep_time) > rep_cooldown:
                     stage = "down"
-                elif not is_rep and stage == "down":
+                elif not is_rep and stage == "down" and (current_time - last_rep_time) > rep_cooldown:
                     stage = "up"
                     rep_count += 1
+                    last_rep_time = current_time
                     
                 # Calculate duration and calories
                 duration = int(time.time() - start_time)
@@ -305,7 +334,7 @@ def workout_monitoring(workout_type):
                     "stage": stage
                 }
                 
-                # Draw rep count on frame
+                # Draw rep count and other info on frame
                 cv2.putText(frame, f'Reps: {rep_count}', (10,30), 
                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
                 cv2.putText(frame, f'Duration: {duration}s', (10,70), 
@@ -314,6 +343,17 @@ def workout_monitoring(workout_type):
                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
                 cv2.putText(frame, f'Stage: {stage}', (10,150), 
                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+                
+                # Draw exercise-specific guidance
+                if workout_type == "squat":
+                    cv2.putText(frame, 'Keep knees behind toes', (10,190), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,255), 2, cv2.LINE_AA)
+                elif workout_type == "bicep_curl":
+                    cv2.putText(frame, 'Keep elbows close to body', (10,190), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,255), 2, cv2.LINE_AA)
+                elif workout_type == "pushup":
+                    cv2.putText(frame, 'Keep body straight', (10,190), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,255), 2, cv2.LINE_AA)
             
             # Display the frame
             cv2.imshow('Workout Monitoring', frame)

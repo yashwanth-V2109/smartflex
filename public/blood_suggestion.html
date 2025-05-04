@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Flex Suggestion Master</title>
+    <style>
+      :root {
+        --primary: #5b86e5;
+        --secondary: #36d1dc;
+        --dark: #333;
+        --light: #f9f9f9;
+        --danger: #ff6b6b;
+        --success: #20bf6b;
+        --warning: #f7b731;
+        --info: #45aaf2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        color: var(--dark);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 20px;
+      }
+
+      .form-section {
+        flex: 1;
+        min-width: 300px;
+        padding: 20px;
+      }
+
+      .results-section {
+        flex: 1;
+        min-width: 300px;
+        padding: 20px;
+        background-color: rgba(91, 134, 229, 0.05);
+        border-left: 1px solid rgba(91, 134, 229, 0.2);
+        display: none;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        color: var(--primary);
+        font-size: 1.8rem;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        border-radius: 2px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(91, 134, 229, 0.2);
+        outline: none;
+      }
+
+      .habit-group {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+      }
+
+      .habit-group h3 {
+        color: var(--dark);
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+      }
+
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .radio-item {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+      }
+
+      .radio-item input[type="radio"] {
+        margin-right: 5px;
+      }
+
+      button {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+      }
+
+      .btn-reset {
+        background: linear-gradient(to right, #a8a8a8, #dddddd);
+        margin-left: 10px;
+      }
+
+      .buttons {
+        margin-top: 30px;
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      .result-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--primary);
+      }
+
+      .result-card h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-size: 1.4rem;
+      }
+
+      .result-card p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .suggestion-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        background-color: rgba(91, 134, 229, 0.05);
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .suggestion-icon {
+        font-size: 20px;
+        margin-right: 10px;
+        color: var(--primary);
+      }
+
+      .animated {
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-summary {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-right: 20px;
+      }
+
+      .profile-info h3 {
+        margin-bottom: 5px;
+        color: var(--dark);
+      }
+
+      .profile-info p {
+        color: #666;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-right: 10px;
+      }
+
+      .badge-primary {
+        background-color: rgba(91, 134, 229, 0.1);
+        color: var(--primary);
+      }
+
+      .badge-info {
+        background-color: rgba(69, 170, 242, 0.1);
+        color: var(--info);
+      }
+
+      @media (max-width: 768px) {
+        .content {
+          flex-direction: column;
+        }
+
+        .form-section,
+        .results-section {
+          width: 100%;
+        }
+
+        .results-section {
+          border-left: none;
+          border-top: 1px solid rgba(91, 134, 229, 0.2);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Smart Flex Suggestion Master</h1>
+        <p>Track your habits and get personalized wellness suggestions</p>
+      </header>
+
+      <div class="content">
+        <section class="form-section">
+          <h2>Personal Information</h2>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name" />
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              placeholder="Enter your age"
+              min="1"
+              max="120"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender">
+              <option value="">Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer-not">Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bloodGroup">Blood Group</label>
+            <select id="bloodGroup">
+              <option value="">Select blood group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+
+          <h2>Daily Habits</h2>
+
+          <div class="habit-group">
+            <h3>Sleep Pattern</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <input type="radio" id="sleep1" name="sleep" value="less-6" />
+                <label for="sleep1">Less than 6 hours</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" id="sleep2" name="sleep" value="6-8" />
+                <label for="sleep2">6-8 hours</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" id="sleep3" name="sleep" value="more-8" />
+                <label for="sleep3">More than 8 hours</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="habit-group">
+            <h3>Physical Activity</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="activity1"
+                  name="activity"
+                  value="sedentary"
+                />
+                <label for="activity1">Sedentary</label>
+              </div>
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="activity2"
+                  name="activity"
+                  value="moderate"
+                />
+                <label for="activity2">Moderate</label>
+              </div>
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="activity3"
+                  name="activity"
+                  value="active"
+                />
+                <label for="activity3">Very Active</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="habit-group">
+            <h3>Water Intake</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <input type="radio" id="water1" name="water" value="less-4" />
+                <label for="water1">Less than 4 glasses</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" id="water2" name="water" value="4-8" />
+                <label for="water2">4-8 glasses</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" id="water3" name="water" value="more-8" />
+                <label for="water3">More than 8 glasses</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="habit-group">
+            <h3>Stress Level</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <input type="radio" id="stress1" name="stress" value="low" />
+                <label for="stress1">Low</label>
+              </div>
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="stress2"
+                  name="stress"
+                  value="moderate"
+                />
+                <label for="stress2">Moderate</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" id="stress3" name="stress" value="high" />
+                <label for="stress3">High</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="buttons">
+            <button id="submitBtn" class="btn-primary">
+              Generate Suggestions
+            </button>
+            <button id="resetBtn" class="btn-reset">Reset</button>
+          </div>
+        </section>
+
+        <section id="resultsSection" class="results-section">
+          <div id="resultsContent">
+            <!-- Results will be dynamically inserted here -->
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const submitBtn = document.getElementById("submitBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const resultsSection = document.getElementById("resultsSection");
+        const resultsContent = document.getElementById("resultsContent");
+
+        // Submit button click handler
+        submitBtn.addEventListener("click", function () {
+          // Get form values
+          const name = document.getElementById("name").value.trim();
+          const age = document.getElementById("age").value;
+          const gender = document.getElementById("gender").value;
+          const bloodGroup = document.getElementById("bloodGroup").value;
+
+          // Get selected habits
+          const sleep = document.querySelector(
+            'input[name="sleep"]:checked'
+          )?.value;
+          const activity = document.querySelector(
+            'input[name="activity"]:checked'
+          )?.value;
+          const water = document.querySelector(
+            'input[name="water"]:checked'
+          )?.value;
+          const stress = document.querySelector(
+            'input[name="stress"]:checked'
+          )?.value;
+
+          // Validate form
+          if (
+            !name ||
+            !age ||
+            !gender ||
+            !bloodGroup ||
+            !sleep ||
+            !activity ||
+            !water ||
+            !stress
+          ) {
+            alert("Please fill in all fields to get personalized suggestions.");
+            return;
+          }
+
+          // Generate and display results
+          generateResults(
+            name,
+            age,
+            gender,
+            bloodGroup,
+            sleep,
+            activity,
+            water,
+            stress
+          );
+
+          // Show results section
+          resultsSection.style.display = "block";
+
+          // Scroll to results on mobile
+          if (window.innerWidth <= 768) {
+            resultsSection.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+
+        // Reset button click handler
+        resetBtn.addEventListener("click", function () {
+          // Clear all form fields
+          document.getElementById("name").value = "";
+          document.getElementById("age").value = "";
+          document.getElementById("gender").selectedIndex = 0;
+          document.getElementById("bloodGroup").selectedIndex = 0;
+
+          // Uncheck all radio buttons
+          const radioButtons = document.querySelectorAll('input[type="radio"]');
+          radioButtons.forEach((button) => (button.checked = false));
+
+          // Hide results section
+          resultsSection.style.display = "none";
+        });
+
+        // Function to generate personalized results
+        function generateResults(
+          name,
+          age,
+          gender,
+          bloodGroup,
+          sleep,
+          activity,
+          water,
+          stress
+        ) {
+          // Clear previous results
+          resultsContent.innerHTML = "";
+
+          // Create profile summary
+          const profileSummary = document.createElement("div");
+          profileSummary.className = "profile-summary animated";
+
+          const avatar = document.createElement("div");
+          avatar.className = "avatar";
+          avatar.textContent = name.charAt(0).toUpperCase();
+
+          const profileInfo = document.createElement("div");
+          profileInfo.className = "profile-info";
+
+          const profileName = document.createElement("h3");
+          profileName.textContent = name;
+
+          const profileDetails = document.createElement("p");
+          profileDetails.innerHTML = `
+                    <span class="badge badge-primary">${age} years</span>
+                    <span class="badge badge-info">${bloodGroup}</span>
+                `;
+
+          profileInfo.appendChild(profileName);
+          profileInfo.appendChild(profileDetails);
+
+          profileSummary.appendChild(avatar);
+          profileSummary.appendChild(profileInfo);
+
+          // Add heading
+          const heading = document.createElement("h2");
+          heading.textContent = "Your Personalized Suggestions";
+
+          // Create results container
+          resultsContent.appendChild(profileSummary);
+          resultsContent.appendChild(heading);
+
+          // Generate suggestions based on input
+          const suggestions = getSuggestions(
+            age,
+            gender,
+            sleep,
+            activity,
+            water,
+            stress,
+            bloodGroup
+          );
+
+          // Add each suggestion card
+          suggestions.forEach((suggestion, index) => {
+            setTimeout(() => {
+              const card = createSuggestionCard(
+                suggestion.title,
+                suggestion.content,
+                suggestion.icon
+              );
+              resultsContent.appendChild(card);
+            }, index * 150); // Staggered animation
+          });
+        }
+
+        // Function to create a suggestion card
+        function createSuggestionCard(title, content, icon) {
+          const card = document.createElement("div");
+          card.className = "result-card animated";
+
+          const cardTitle = document.createElement("h3");
+          cardTitle.textContent = title;
+
+          const cardContent = document.createElement("div");
+          cardContent.innerHTML = content;
+
+          card.appendChild(cardTitle);
+          card.appendChild(cardContent);
+
+          return card;
+        }
+
+        // Function to get personalized suggestions based on input
+        function getSuggestions(
+          age,
+          gender,
+          sleep,
+          activity,
+          water,
+          stress,
+          bloodGroup
+        ) {
+          const suggestions = [];
+
+          // Sleep suggestions
+          let sleepSuggestion = {
+            title: "Sleep Recommendations",
+            icon: "💤",
+            content: "<p>Based on your sleep pattern:</p>",
+          };
+
+          if (sleep === "less-6") {
+            sleepSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⚠️</span>
+                            <div>You're getting less than the recommended amount of sleep. Aim for 7-9 hours to improve overall health.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🌙</span>
+                            <div>Try establishing a consistent bedtime routine and avoid screens at least 1 hour before bed.</div>
+                        </div>
+                    `;
+          } else if (sleep === "6-8") {
+            sleepSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">✅</span>
+                            <div>You're getting a healthy amount of sleep. Keep maintaining this sleep schedule.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">💡</span>
+                            <div>For even better sleep quality, consider practicing relaxation techniques before bed.</div>
+                        </div>
+                    `;
+          } else if (sleep === "more-8") {
+            sleepSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🔍</span>
+                            <div>While getting enough sleep is important, consistently sleeping more than 9 hours might indicate other health issues.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⏰</span>
+                            <div>Try to maintain a consistent wake-up time, even on weekends.</div>
+                        </div>
+                    `;
+          }
+
+          suggestions.push(sleepSuggestion);
+
+          // Activity suggestions
+          let activitySuggestion = {
+            title: "Physical Activity Plan",
+            icon: "🏃",
+            content: "<p>Based on your activity level:</p>",
+          };
+
+          if (activity === "sedentary") {
+            activitySuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⚠️</span>
+                            <div>A sedentary lifestyle increases health risks. Try to incorporate at least 30 minutes of moderate activity daily.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🚶</span>
+                            <div>Start with short walks or simple stretching exercises. Even small increases in activity can have significant health benefits.</div>
+                        </div>
+                    `;
+          } else if (activity === "moderate") {
+            activitySuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">✅</span>
+                            <div>You have a good activity level. Consider adding variety to your workouts for better results.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">💪</span>
+                            <div>Include both cardio and strength training in your routine for balanced fitness.</div>
+                        </div>
+                    `;
+          } else if (activity === "active") {
+            activitySuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🌟</span>
+                            <div>Great job staying very active! Make sure to include rest days to prevent overtraining.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🧘</span>
+                            <div>Add flexibility exercises like yoga or pilates to complement your high-intensity activities.</div>
+                        </div>
+                    `;
+          }
+
+          suggestions.push(activitySuggestion);
+
+          // Water intake suggestions
+          let waterSuggestion = {
+            title: "Hydration Guide",
+            icon: "💧",
+            content: "<p>Based on your water intake:</p>",
+          };
+
+          if (water === "less-4") {
+            waterSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⚠️</span>
+                            <div>You're not drinking enough water. Aim for at least 8 glasses (2 liters) daily for proper hydration.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">💡</span>
+                            <div>Set reminders or use a water tracking app to increase your intake gradually.</div>
+                        </div>
+                    `;
+          } else if (water === "4-8") {
+            waterSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">👍</span>
+                            <div>You have a moderate water intake. Consider increasing slightly for optimal hydration.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🍉</span>
+                            <div>Water-rich foods like fruits and vegetables can also contribute to your daily fluid intake.</div>
+                        </div>
+                    `;
+          } else if (water === "more-8") {
+            waterSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">✅</span>
+                            <div>Excellent hydration habits! Keep up the good work.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🧪</span>
+                            <div>Your urine should be pale yellow, which is a good indicator of proper hydration.</div>
+                        </div>
+                    `;
+          }
+
+          suggestions.push(waterSuggestion);
+
+          // Stress management suggestions
+          let stressSuggestion = {
+            title: "Stress Management",
+            icon: "🧠",
+            content: "<p>Based on your stress level:</p>",
+          };
+
+          if (stress === "high") {
+            stressSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⚠️</span>
+                            <div>High stress levels can impact your physical and mental health. Consider stress reduction techniques.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🧘</span>
+                            <div>Daily meditation, deep breathing exercises, or mindfulness can significantly reduce stress.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🗓️</span>
+                            <div>Time management and setting boundaries can help prevent stress from accumulating.</div>
+                        </div>
+                    `;
+          } else if (stress === "moderate") {
+            stressSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">⚖️</span>
+                            <div>You're experiencing moderate stress. It's important to have effective coping mechanisms.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🌳</span>
+                            <div>Regular nature walks and hobby time can help maintain balanced stress levels.</div>
+                        </div>
+                    `;
+          } else if (stress === "low") {
+            stressSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">✅</span>
+                            <div>Great job maintaining low stress levels. This has significant benefits for your overall health.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">📝</span>
+                            <div>Consider keeping a gratitude journal to continue reinforcing positive mental health.</div>
+                        </div>
+                    `;
+          }
+
+          suggestions.push(stressSuggestion);
+
+          // Blood group specific suggestions
+          let bloodGroupSuggestion = {
+            title: "Blood Type Information",
+            icon: "🩸",
+            content: `<p>Information regarding your ${bloodGroup} blood type:</p>`,
+          };
+
+          // Basic information about blood types and general health tips
+          switch (bloodGroup) {
+            case "A+":
+            case "A-":
+              bloodGroupSuggestion.content += `
+                            <div class="suggestion-item">
+                                <span class="suggestion-icon">🍎</span>
+                                <div>Type A blood is associated with a higher risk of cardiovascular diseases. Consider a plant-based diet rich in fruits, vegetables, and whole grains.</div>
+                            </div>
+                        `;
+              break;
+            case "B+":
+            case "B-":
+              bloodGroupSuggestion.content += `
+                            <div class="suggestion-item">
+                                <span class="suggestion-icon">🥗</span>
+                                <div>Type B blood is associated with a strong immune system. A balanced diet with moderate protein intake is beneficial.</div>
+                            </div>
+                        `;
+              break;
+            case "AB+":
+            case "AB-":
+              bloodGroupSuggestion.content += `
+                            <div class="suggestion-item">
+                                <span class="suggestion-icon">🧠</span>
+                                <div>Type AB blood is the rarest type. People with AB blood may have higher risk of cognitive issues with aging, so brain-healthy foods are important.</div>
+                            </div>
+                        `;
+              break;
+            case "O+":
+            case "O-":
+              bloodGroupSuggestion.content += `
+                            <div class="suggestion-item">
+                                <span class="suggestion-icon">🏃</span>
+                                <div>Type O blood is associated with better endurance. A protein-rich diet with regular intense exercise might be beneficial.</div>
+                            </div>
+                        `;
+              break;
+          }
+
+          bloodGroupSuggestion.content += `
+                    <div class="suggestion-item">
+                        <span class="suggestion-icon">ℹ️</span>
+                        <div>Note: Blood type-based diet theories lack strong scientific evidence. Focus on overall balanced nutrition and consult healthcare professionals for personalized advice.</div>
+                    </div>
+                `;
+
+          suggestions.push(bloodGroupSuggestion);
+
+          // Age-specific suggestions
+          let ageSuggestion = {
+            title: "Age-Based Recommendations",
+            icon: "📅",
+            content: "<p>Based on your age:</p>",
+          };
+
+          if (age < 18) {
+            ageSuggestion.content += `
+                                               <div class="suggestion-item">
+                            <span class="suggestion-icon">🍎</span>
+                            <div>Focus on balanced nutrition to support growth and development. Include calcium-rich foods and engage in daily physical activities.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🛌</span>
+                            <div>Teens require more sleep—aim for 8–10 hours to support mental and physical health.</div>
+                        </div>
+                    `;
+          } else if (age >= 18 && age <= 35) {
+            ageSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">💪</span>
+                            <div>This is your peak performance phase. Focus on building muscle, managing stress, and maintaining cardiovascular health.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🥗</span>
+                            <div>Include a mix of protein, fiber, and healthy fats to sustain energy and metabolism.</div>
+                        </div>
+                    `;
+          } else if (age > 35 && age <= 50) {
+            ageSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🔍</span>
+                            <div>Start monitoring blood pressure, cholesterol, and bone density. Lifestyle changes now can prevent future health issues.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🥦</span>
+                            <div>Focus on antioxidant-rich foods and maintain an active lifestyle to slow down aging effects.</div>
+                        </div>
+                    `;
+          } else {
+            ageSuggestion.content += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🦴</span>
+                            <div>Support bone health with calcium, vitamin D, and regular low-impact exercises like walking or yoga.</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">🧠</span>
+                            <div>Include brain-boosting nutrients such as omega-3 fatty acids, and stay mentally engaged with activities and hobbies.</div>
+                        </div>
+                    `;
+          }
+
+          suggestions.push(ageSuggestion);
+
+          return suggestions;
+        }
+      });
+    </script>
+  </body>
+</html> 
