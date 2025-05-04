@@ -905,6 +905,118 @@
         font-size: 12px;
         border-radius: 4px;
       }
+
+      .nutrition-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 20px 0;
+      }
+
+      .food-input-form {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .btn-primary {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+        flex: 1;
+      }
+
+      .btn-primary:hover {
+        background: #45a049;
+      }
+
+      .food-items-list {
+        margin: 20px 0;
+      }
+
+      .items-list {
+        margin-top: 10px;
+      }
+
+      .food-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+
+      .food-item-info {
+        flex: 1;
+      }
+
+      .food-item-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .remove-btn {
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      .remove-btn:hover {
+        background: #cc0000;
+      }
+
+      .nutrition-results {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      .nutrition-details {
+        margin-top: 10px;
+      }
+
+      .nutrition-details p {
+        margin: 5px 0;
+        color: #666;
+      }
+
+      .error {
+        color: #ff4444;
+      }
     </style>
   </head>
   <body class="bg-gray-100 min-h-screen">
@@ -1273,51 +1385,41 @@
           <div class="card">
             <h2><i class="fas fa-calendar-alt"></i> Upcoming Meal Plan</h2>
 
-            <div class="meal-list">
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Breakfast</h4>
-                    <p>Protein pancakes with berries</p>
-                  </div>
-                </div>
-                <div class="meal-calories">340 cal</div>
-              </div>
+            <div class="nutrition-section">
+                <h2>Nutrition Planner</h2>
+                <div class="nutrition-content">
+                    <div class="food-input-form">
+                        <h3>Add Food Items</h3>
+                        <form id="foodForm">
+                            <div class="form-group">
+                                <label for="foodName">Food Name:</label>
+                                <input type="text" id="foodName" name="foodName" placeholder="e.g., apple, rice, chicken" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="foodQuantity">Quantity (grams):</label>
+                                <input type="number" id="foodQuantity" name="foodQuantity" min="1" value="100" required>
+                            </div>
+                            <div class="button-group">
+                                <button type="button" class="btn-primary" onclick="addFoodItem()">Add Item</button>
+                                <button type="button" class="btn-primary" onclick="calculateTotal()">Calculate Total</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="food-items-list">
+                        <h3>Added Food Items</h3>
+                        <div id="foodItemsList" class="items-list">
+                            <!-- Food items will be added here -->
+                        </div>
+                    </div>
 
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-cloud-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Lunch</h4>
-                    <p>Quinoa bowl with veggies and tofu</p>
-                  </div>
+                    <div class="nutrition-results">
+                        <h3>Total Nutrition Information</h3>
+                        <div id="nutritionDetails" class="nutrition-details">
+                            <p>Add food items to see nutrition information</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="meal-calories">450 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-moon"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Dinner</h4>
-                    <p>Grilled fish with roasted vegetables</p>
-                  </div>
-                </div>
-                <div class="meal-calories">380 cal</div>
-              </div>
-            </div>
-
-            <div style="margin-top: 20px; text-align: center">
-              <button class="btn btn-outline">
-                <i class="fas fa-edit"></i> Edit Meal Plan
-              </button>
             </div>
           </div>
 
@@ -1996,6 +2098,109 @@
           document.getElementById('loadingIndicator').style.display = 'none';
           showNotification('Failed to load test image', 'error');
         }
+      }
+
+      let foodItems = [];
+
+      function addFoodItem() {
+        const foodName = document.getElementById('foodName').value.trim();
+        const quantity = parseFloat(document.getElementById('foodQuantity').value);
+        
+        if (!foodName || isNaN(quantity)) {
+          alert('Please enter valid food name and quantity');
+          return;
+        }
+        
+        // Add to food items array
+        foodItems.push({
+          name: foodName,
+          quantity: quantity
+        });
+        
+        // Update the food items list
+        updateFoodItemsList();
+        
+        // Clear the form
+        document.getElementById('foodName').value = '';
+        document.getElementById('foodQuantity').value = '100';
+      }
+
+      function updateFoodItemsList() {
+        const itemsList = document.getElementById('foodItemsList');
+        itemsList.innerHTML = '';
+        
+        foodItems.forEach((item, index) => {
+          const itemElement = document.createElement('div');
+          itemElement.className = 'food-item';
+          itemElement.innerHTML = `
+            <div class="food-item-info">
+              <span>${item.name} (${item.quantity}g)</span>
+            </div>
+            <div class="food-item-actions">
+              <button class="remove-btn" onclick="removeFoodItem(${index})">Remove</button>
+            </div>
+          `;
+          itemsList.appendChild(itemElement);
+        });
+      }
+
+      function removeFoodItem(index) {
+        foodItems.splice(index, 1);
+        updateFoodItemsList();
+      }
+
+      function calculateTotal() {
+        if (foodItems.length === 0) {
+          document.getElementById('nutritionDetails').innerHTML = 
+            '<p>Please add food items first</p>';
+          return;
+        }
+        
+        // Get nutrition data for all items
+        Promise.all(foodItems.map(item => 
+          fetch('http://localhost:5000/api/get-nutrition', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              foodName: item.name,
+              quantity: item.quantity
+            })
+          }).then(response => response.json())
+        ))
+        .then(results => {
+          // Calculate totals
+          const totals = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+          };
+          
+          results.forEach(result => {
+            if (!result.error) {
+              totals.calories += result.calories;
+              totals.protein += result.protein;
+              totals.carbs += result.carbs;
+              totals.fat += result.fat;
+            }
+          });
+          
+          // Update the nutrition details
+          const nutritionDetails = document.getElementById('nutritionDetails');
+          nutritionDetails.innerHTML = `
+            <p><strong>Total Calories:</strong> ${totals.calories.toFixed(1)} kcal</p>
+            <p><strong>Total Protein:</strong> ${totals.protein.toFixed(1)}g</p>
+            <p><strong>Total Carbohydrates:</strong> ${totals.carbs.toFixed(1)}g</p>
+            <p><strong>Total Fat:</strong> ${totals.fat.toFixed(1)}g</p>
+          `;
+        })
+        .catch(error => {
+          document.getElementById('nutritionDetails').innerHTML = 
+            '<p class="error">Error calculating nutrition information</p>';
+          console.error('Error:', error);
+        });
       }
     </script>
   </body>

@@ -492,6 +492,13 @@ FOOD_NUTRITION = {
     'fries': {'calories': 365, 'protein': 4, 'carbs': 48, 'fat': 17},
     'chicken': {'calories': 335, 'protein': 31, 'carbs': 0, 'fat': 20},
     'rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'white rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'brown rice': {'calories': 112, 'protein': 2.6, 'carbs': 23, 'fat': 0.9},
+    'cooked rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'steamed rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'boiled rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'rice bowl': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'rice dish': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
     'pasta': {'calories': 131, 'protein': 5, 'carbs': 25, 'fat': 1.1},
     'bread': {'calories': 79, 'protein': 2.7, 'carbs': 15, 'fat': 1},
     'egg': {'calories': 70, 'protein': 6, 'carbs': 0.6, 'fat': 5},
@@ -502,6 +509,94 @@ FOOD_NUTRITION = {
     'tea': {'calories': 2, 'protein': 0, 'carbs': 0, 'fat': 0},
     'water': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
     'soda': {'calories': 150, 'protein': 0, 'carbs': 39, 'fat': 0},
+    # Add more food items with their nutritional values
+    'broccoli': {'calories': 55, 'protein': 3.7, 'carbs': 11, 'fat': 0.6},
+    'carrot': {'calories': 41, 'protein': 0.9, 'carbs': 10, 'fat': 0.2},
+    'potato': {'calories': 77, 'protein': 2, 'carbs': 17, 'fat': 0.1},
+    'tomato': {'calories': 22, 'protein': 1.1, 'carbs': 4.8, 'fat': 0.2},
+    'cucumber': {'calories': 16, 'protein': 0.7, 'carbs': 3.6, 'fat': 0.1},
+    'onion': {'calories': 40, 'protein': 1.1, 'carbs': 9.3, 'fat': 0.1},
+    'garlic': {'calories': 149, 'protein': 6.4, 'carbs': 33, 'fat': 0.5},
+    'bell pepper': {'calories': 30, 'protein': 1, 'carbs': 6, 'fat': 0.3},
+    'mushroom': {'calories': 22, 'protein': 3.1, 'carbs': 3.3, 'fat': 0.3},
+    'lettuce': {'calories': 5, 'protein': 0.5, 'carbs': 1, 'fat': 0.1},
+    'spinach': {'calories': 23, 'protein': 2.9, 'carbs': 3.6, 'fat': 0.4},
+    'corn': {'calories': 86, 'protein': 3.3, 'carbs': 19, 'fat': 1.4},
+    'peas': {'calories': 81, 'protein': 5.4, 'carbs': 14, 'fat': 0.4},
+    'beans': {'calories': 127, 'protein': 8.7, 'carbs': 22, 'fat': 0.5},
+    'lentils': {'calories': 116, 'protein': 9, 'carbs': 20, 'fat': 0.4},
+    'tofu': {'calories': 76, 'protein': 8, 'carbs': 1.9, 'fat': 4.8},
+    'fish': {'calories': 206, 'protein': 22, 'carbs': 0, 'fat': 13},
+    'beef': {'calories': 250, 'protein': 26, 'carbs': 0, 'fat': 17},
+    'pork': {'calories': 242, 'protein': 27, 'carbs': 0, 'fat': 14},
+    'lamb': {'calories': 294, 'protein': 25, 'carbs': 0, 'fat': 21},
+    'turkey': {'calories': 189, 'protein': 29, 'carbs': 0, 'fat': 7},
+    'duck': {'calories': 337, 'protein': 19, 'carbs': 0, 'fat': 28},
+    'shrimp': {'calories': 99, 'protein': 24, 'carbs': 0.2, 'fat': 0.3},
+    'crab': {'calories': 97, 'protein': 20, 'carbs': 0, 'fat': 1.5},
+    'lobster': {'calories': 128, 'protein': 27, 'carbs': 0.5, 'fat': 1.2},
+    'oyster': {'calories': 68, 'protein': 7, 'carbs': 3.9, 'fat': 2.1},
+    'mussel': {'calories': 73, 'protein': 10, 'carbs': 2.7, 'fat': 1.9},
+    'clam': {'calories': 74, 'protein': 12, 'carbs': 2.6, 'fat': 1},
+    'scallop': {'calories': 88, 'protein': 17, 'carbs': 2.4, 'fat': 0.8},
+    'squid': {'calories': 92, 'protein': 16, 'carbs': 3.1, 'fat': 1.4},
+    'octopus': {'calories': 82, 'protein': 15, 'carbs': 0, 'fat': 1},
+    'salmon': {'calories': 208, 'protein': 22, 'carbs': 0, 'fat': 13},
+    'tuna': {'calories': 144, 'protein': 30, 'carbs': 0, 'fat': 1},
+    'cod': {'calories': 82, 'protein': 18, 'carbs': 0, 'fat': 0.7},
+    'haddock': {'calories': 87, 'protein': 20, 'carbs': 0, 'fat': 0.7},
+    'halibut': {'calories': 111, 'protein': 23, 'carbs': 0, 'fat': 2},
+    'mackerel': {'calories': 205, 'protein': 19, 'carbs': 0, 'fat': 14},
+    'sardine': {'calories': 208, 'protein': 25, 'carbs': 0, 'fat': 11},
+    'anchovy': {'calories': 131, 'protein': 20, 'carbs': 0, 'fat': 4.8},
+    'herring': {'calories': 158, 'protein': 18, 'carbs': 0, 'fat': 9},
+    'trout': {'calories': 168, 'protein': 22, 'carbs': 0, 'fat': 7.2},
+    'bass': {'calories': 124, 'protein': 23, 'carbs': 0, 'fat': 2.6},
+    'catfish': {'calories': 105, 'protein': 18, 'carbs': 0, 'fat': 2.9},
+    'tilapia': {'calories': 96, 'protein': 20, 'carbs': 0, 'fat': 1.7},
+    'swordfish': {'calories': 172, 'protein': 23, 'carbs': 0, 'fat': 7.9},
+    'mahi mahi': {'calories': 109, 'protein': 23, 'carbs': 0, 'fat': 0.9},
+    'grouper': {'calories': 92, 'protein': 19, 'carbs': 0, 'fat': 1.2},
+    'snapper': {'calories': 128, 'protein': 26, 'carbs': 0, 'fat': 1.7},
+    'perch': {'calories': 91, 'protein': 19, 'carbs': 0, 'fat': 0.9},
+    'pike': {'calories': 88, 'protein': 19, 'carbs': 0, 'fat': 0.7},
+    'walleye': {'calories': 93, 'protein': 19, 'carbs': 0, 'fat': 1.2},
+    'flounder': {'calories': 86, 'protein': 18, 'carbs': 0, 'fat': 1.2},
+    'sole': {'calories': 91, 'protein': 18, 'carbs': 0, 'fat': 1.2},
+    'whiting': {'calories': 90, 'protein': 18, 'carbs': 0, 'fat': 1.2},
+    'pollock': {'calories': 82, 'protein': 17, 'carbs': 0, 'fat': 0.9},
+    'rockfish': {'calories': 96, 'protein': 18, 'carbs': 0, 'fat': 2},
+    'sea bass': {'calories': 97, 'protein': 20, 'carbs': 0, 'fat': 1.5},
+    'red snapper': {'calories': 128, 'protein': 26, 'carbs': 0, 'fat': 1.7},
+    'yellowtail': {'calories': 146, 'protein': 24, 'carbs': 0, 'fat': 4.5},
+    'amberjack': {'calories': 146, 'protein': 24, 'carbs': 0, 'fat': 4.5},
+    'barracuda': {'calories': 146, 'protein': 24, 'carbs': 0, 'fat': 4.5},
+    'bluefish': {'calories': 146, 'protein': 24, 'carbs': 0, 'fat': 4.5},
+    'carp': {'calories': 127, 'protein': 18, 'carbs': 0, 'fat': 5.6},
+    'eel': {'calories': 184, 'protein': 18, 'carbs': 0, 'fat': 11},
+    'frog': {'calories': 73, 'protein': 16, 'carbs': 0, 'fat': 0.3},
+    'grouper': {'calories': 92, 'protein': 19, 'carbs': 0, 'fat': 1.2},
+    'hake': {'calories': 90, 'protein': 19, 'carbs': 0, 'fat': 0.9},
+    'herring': {'calories': 158, 'protein': 18, 'carbs': 0, 'fat': 9},
+    'mackerel': {'calories': 205, 'protein': 19, 'carbs': 0, 'fat': 14},
+    'mullet': {'calories': 117, 'protein': 24, 'carbs': 0, 'fat': 2.3},
+    'pompano': {'calories': 164, 'protein': 20, 'carbs': 0, 'fat': 9.2},
+    'sablefish': {'calories': 195, 'protein': 13, 'carbs': 0, 'fat': 15},
+    'sardine': {'calories': 208, 'protein': 25, 'carbs': 0, 'fat': 11},
+    'shark': {'calories': 130, 'protein': 21, 'carbs': 0, 'fat': 4.5},
+    'skate': {'calories': 95, 'protein': 20, 'carbs': 0, 'fat': 1.5},
+    'smelt': {'calories': 97, 'protein': 18, 'carbs': 0, 'fat': 2.4},
+    'snapper': {'calories': 128, 'protein': 26, 'carbs': 0, 'fat': 1.7},
+    'sturgeon': {'calories': 135, 'protein': 20, 'carbs': 0, 'fat': 5.2},
+    'sunfish': {'calories': 97, 'protein': 21, 'carbs': 0, 'fat': 1.3},
+    'surimi': {'calories': 99, 'protein': 15, 'carbs': 6.8, 'fat': 0.9},
+    'swordfish': {'calories': 172, 'protein': 23, 'carbs': 0, 'fat': 7.9},
+    'tilapia': {'calories': 96, 'protein': 20, 'carbs': 0, 'fat': 1.7},
+    'trout': {'calories': 168, 'protein': 22, 'carbs': 0, 'fat': 7.2},
+    'tuna': {'calories': 144, 'protein': 30, 'carbs': 0, 'fat': 1},
+    'whitefish': {'calories': 134, 'protein': 19, 'carbs': 0, 'fat': 5.9},
+    'yellowtail': {'calories': 146, 'protein': 24, 'carbs': 0, 'fat': 4.5},
+    'zander': {'calories': 93, 'protein': 20, 'carbs': 0, 'fat': 1.2}
 }
 
 # Load YOLOv5 model
@@ -539,13 +634,30 @@ def detect_food():
                 label = model.names[int(cls)]
                 confidence = float(conf)
                 
-                # Only process food items with confidence > 0.5
-                if confidence > 0.5 and label in FOOD_NUTRITION:
-                    detections.append({
-                        'label': label,
-                        'confidence': confidence,
-                        'nutrition': FOOD_NUTRITION[label]
-                    })
+                # Lower the confidence threshold to detect more items
+                if confidence > 0.3:
+                    # Try to match the label with our food database
+                    matched_label = None
+                    
+                    # Check for rice-related items
+                    if 'rice' in label.lower():
+                        matched_label = 'rice'
+                    # Check for other food items
+                    elif label in FOOD_NUTRITION:
+                        matched_label = label
+                    # Try to match with similar names
+                    else:
+                        for food_name in FOOD_NUTRITION.keys():
+                            if food_name in label.lower() or label.lower() in food_name:
+                                matched_label = food_name
+                                break
+                    
+                    if matched_label:
+                        detections.append({
+                            'label': matched_label,
+                            'confidence': confidence,
+                            'nutrition': FOOD_NUTRITION[matched_label]
+                        })
             
             # Draw bounding boxes on the image
             img_np = np.array(img)
@@ -574,6 +686,37 @@ def detect_food():
             
     except Exception as e:
         print(f"Error in food detection: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/get-nutrition', methods=['POST'])
+def get_nutrition():
+    try:
+        data = request.get_json()
+        food_name = data.get('foodName', '').lower()
+        quantity = float(data.get('quantity', 100))  # Default to 100g if not specified
+        
+        # Find the food in our database
+        food_data = None
+        for food_key in FOOD_NUTRITION:
+            if food_name in food_key or food_key in food_name:
+                food_data = FOOD_NUTRITION[food_key]
+                break
+        
+        if not food_data:
+            return jsonify({'error': 'Food not found in database'}), 404
+        
+        # Calculate nutrition based on quantity (assuming values are per 100g)
+        scale_factor = quantity / 100.0
+        nutrition_info = {
+            'calories': round(food_data['calories'] * scale_factor, 1),
+            'protein': round(food_data['protein'] * scale_factor, 1),
+            'carbs': round(food_data['carbs'] * scale_factor, 1),
+            'fat': round(food_data['fat'] * scale_factor, 1)
+        }
+        
+        return jsonify(nutrition_info)
+        
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
