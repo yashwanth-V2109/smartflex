@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start Workout</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        min-height: 100vh;
+        color: white;
+      }
+      .workout-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 800px;
+      }
+      .video-container {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        background: #000;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #4caf50;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        color: #888;
+      }
+      .workout-type-selector {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .workout-type-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid transparent;
+        padding: 0.5rem 1rem;
+        margin: 0 0.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .workout-type-btn.active {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto px-4 py-8">
+      <div class="workout-container">
+        <h1 class="text-3xl font-bold mb-6 text-center">Workout Session</h1>
+
+        <div class="workout-type-selector">
+          <button class="workout-type-btn" data-type="bicep_curl">
+            Bicep Curl
+          </button>
+          <button class="workout-type-btn" data-type="squat">Squat</button>
+          <button class="workout-type-btn" data-type="pushup">Pushup</button>
+        </div>
+
+        <div class="video-container">
+          <video id="videoElement" autoplay playsinline></video>
+        </div>
+
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-value" id="repCount">0</div>
+            <div class="stat-label">Reps</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="duration">00:00</div>
+            <div class="stat-label">Duration</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="calories">0</div>
+            <div class="stat-label">Calories</div>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button
+            id="startWorkoutBtn"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300 mr-4"
+          >
+            Start Workout
+          </button>
+          <button
+            id="endWorkoutBtn"
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+            disabled
+          >
+            End Workout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let selectedWorkoutType = "squat"; // Default workout type
+      let workoutInterval = null;
+      let currentSessionId = null; // Store the current session ID
+
+      // Function to handle workout type selection
+      document.querySelectorAll(".workout-type-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".workout-type-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedWorkoutType = btn.dataset.type;
+        });
+      });
+
+      // Set default active workout type
+      document
+        .querySelector('.workout-type-btn[data-type="squat"]')
+        .classList.add("active");
+
+      // Function to start the workout session
+      async function startWorkout() {
+        try {
+          const userId = localStorage.getItem("userId");
+          console.log("Starting workout with userId:", userId);
+
+          if (!userId) {
+            console.log("No userId found, redirecting to login");
+            window.location.href = "/login";
+            return;
+          }
+
+          const response = await fetch("/api/workout/start", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "user-id": userId,
+            },
+            body: JSON.stringify({
+              userId: userId,
+              workoutType: selectedWorkoutType,
+            }),
+          });
+
+          if (!response.ok) {
+            if (response.status === 401) {
+              window.location.href = "/login";
+              return;
+            }
+            throw new Error("Failed to start workout");
+          }
+
+          const data = await response.json();
+          currentSessionId = data.sessionId; // Store the session ID
+          console.log("Workout started with sessionId:", currentSessionId);
+
+          // Update UI
+          document.getElementById("startWorkoutBtn").disabled = true;
+          document.getElementById("endWorkoutBtn").disabled = false;
+
+          // Start reading workout data
+          startReadingWorkoutData();
+        } catch (error) {
+          console.error("Error starting workout:", error);
+          alert("Failed to start workout. Please try again.");
+        }
+      }
+
+      // Function to read workout data from the Flask server
+      function startReadingWorkoutData() {
+        const userId = localStorage.getItem("userId");
+        console.log(
+          "Starting workout data reading with userId:",
+          userId,
+          "and sessionId:",
+          currentSessionId
+        );
+
+        workoutInterval = setInterval(async () => {
+          try {
+            const response = await fetch(
+              `/api/workout/data?sessionId=${currentSessionId}`,
+              {
+                headers: {
+                  "user-id": userId,
+                },
+              }
+            );
+            if (response.status === 401) {
+              clearInterval(workoutInterval);
+              console.log("Unauthorized access, redirecting to login");
+              window.location.href = "/login";
+              return;
+            }
+            if (response.ok) {
+              const data = await response.json();
+              updateStats(data);
+            }
+          } catch (error) {
+            console.error("Error reading workout data:", error);
+          }
+        }, 1000); // Update every second
+      }
+
+      // Function to update stats on the page
+      function updateStats(data) {
+        document.getElementById("repCount").textContent = data.repCount || 0;
+        document.getElementById("duration").textContent = formatDuration(
+          data.duration || 0
+        );
+        document.getElementById("calories").textContent = Math.round(
+          data.calories || 0
+        );
+      }
+
+      // Function to format duration
+      function formatDuration(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      // Function to end workout
+      async function endWorkout() {
+        try {
+          const userId = localStorage.getItem("userId");
+          if (!userId) {
+            window.location.href = "/login";
+            return;
+          }
+
+          if (!currentSessionId) {
+            console.error("No active session ID found");
+            alert("No active workout session found. Please try again.");
+            return;
+          }
+
+          const response = await fetch("/api/workout/end", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "user-id": userId,
+            },
+            body: JSON.stringify({
+              sessionId: currentSessionId,
+              userId: userId,
+            }),
+          });
+
+          if (response.ok) {
+            // Clear interval and reset UI
+            clearInterval(workoutInterval);
+            document.getElementById("startWorkoutBtn").disabled = false;
+            document.getElementById("endWorkoutBtn").disabled = true;
+
+            // Get final workout data
+            const data = await response.json();
+
+            // Save workout data to localStorage for dashboard
+            const workouts = JSON.parse(
+              localStorage.getItem("workouts") || "[]"
+            );
+            workouts.push({
+              type: selectedWorkoutType,
+              reps: data.repCount,
+              duration: data.duration,
+              calories: data.calories,
+              date: new Date().toISOString(),
+            });
+            localStorage.setItem("workouts", JSON.stringify(workouts));
+
+            // Reset session ID
+            currentSessionId = null;
+
+            // Redirect to dashboard
+            window.location.href = "/dashboard.html";
+          } else {
+            throw new Error("Failed to end workout");
+          }
+        } catch (error) {
+          console.error("Error ending workout:", error);
+          alert("Failed to end workout. Please try again.");
+        }
+      }
+
+      // Event listeners
+      document
+        .getElementById("startWorkoutBtn")
+        .addEventListener("click", startWorkout);
+      document
+        .getElementById("endWorkoutBtn")
+        .addEventListener("click", endWorkout);
+
+      // Check authentication on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        const userId = localStorage.getItem("userId");
+        console.log("Current userId in localStorage:", userId);
+        if (!userId) {
+          window.location.href = "/login";
+          return;
+        }
+        console.log("User is authenticated with ID:", userId);
+      });
+    </script>
+  </body>
+</html>

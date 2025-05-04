@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriTrack - Smart Nutrition Planning</title>
+    <style>
+      :root {
+        --primary: #5ac8fa;
+        --primary-light: #8ad5fa;
+        --primary-dark: #2897cf;
+        --accent: #ff9500;
+        --accent-light: #ffb74d;
+        --success: #34c759;
+        --text: #333333;
+        --text-light: #757575;
+        --background: #ffffff;
+        --background-alt: #f8f9fa;
+        --border-radius: 16px;
+        --shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      }
+
+      body {
+        background-color: var(--background-alt);
+        color: var(--text);
+        line-height: 1.6;
+        padding-bottom: 40px;
+      }
+
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 1.5rem 0;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      @media (min-width: 992px) {
+        .dashboard {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .main-column {
+          grid-column: 1;
+        }
+
+        .side-column {
+          grid-column: 2;
+        }
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+      }
+
+      .logo i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+      }
+
+      .user-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card {
+        background: var(--background);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 25px;
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .card h2 {
+        color: var(--text);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+      }
+
+      .card h2 i {
+        color: var(--primary);
+        font-size: 1.4rem;
+      }
+
+      /* Daily summary card */
+      .summary-card {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 30px;
+        position: relative;
+      }
+
+      .summary-card h2 {
+        color: white;
+        margin-bottom: 25px;
+      }
+
+      .summary-card h2 i {
+        color: white;
+      }
+
+      .circular-progress {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 20px;
+        position: relative;
+      }
+
+      .circle-bg {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.3);
+        stroke-width: 12;
+      }
+
+      .circle-progress {
+        fill: none;
+        stroke: white;
+        stroke-width: 12;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: center;
+        transition: stroke-dashoffset 0.5s ease;
+      }
+
+      .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .progress-text .big-text {
+        font-size: 2.2rem;
+        line-height: 1;
+      }
+
+      .progress-text .small-text {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .calorie-numbers {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .calorie-item {
+        flex: 1;
+        padding: 10px;
+      }
+
+      .calorie-item h3 {
+        font-size: 0.9rem;
+        font-weight: normal;
+        opacity: 0.9;
+        margin-bottom: 5px;
+      }
+
+      .calorie-item .value {
+        font-size: 1.6rem;
+        font-weight: bold;
+      }
+
+      .gradient-overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        border-radius: 50%;
+        opacity: 0.8;
+        z-index: 1;
+      }
+
+      /* Upload area */
+      .upload-area {
+        background: var(--background);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        text-align: center;
+        border: 2px dashed rgba(90, 200, 250, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-area:hover {
+        border-color: var(--primary);
+        background-color: rgba(90, 200, 250, 0.03);
+      }
+
+      .upload-area .icon-container {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(90, 200, 250, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+      }
+
+      .upload-area .icon-container i {
+        color: var(--primary);
+        font-size: 2rem;
+      }
+
+      .upload-area h3 {
+        color: var(--text);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .upload-area p {
+        color: var(--text-light);
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-accent {
+        background-color: var(--accent);
+      }
+
+      .btn-accent:hover {
+        background-color: #e67e00;
+      }
+
+      .btn-success {
+        background-color: var(--success);
+      }
+
+      .btn-success:hover {
+        background-color: #28a745;
+      }
+
+      /* Meals section */
+      .meals-section {
+        margin-top: 30px;
+      }
+
+      .meals-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .meal-list {
+        margin-top: 20px;
+      }
+
+      .meal-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+      }
+
+      .meal-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .meal-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .meal-icon {
+        width: 48px;
+        height: 48px;
+        background-color: rgba(90, 200, 250, 0.1);
+        color: var(--primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .meal-icon i {
+        font-size: 1.2rem;
+      }
+
+      .meal-details h4 {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .meal-details p {
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .meal-calories {
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 1.1rem;
+      }
+
+      /* Suggestions section */
+      .suggestions-section h3 {
+        color: var(--text);
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .suggestion-card {
+        background-color: rgba(90, 200, 250, 0.05);
+        border-left: 4px solid var(--primary);
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 12px;
+      }
+
+      .suggestion-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary-dark);
+      }
+
+      .suggestion-title i {
+        color: var(--primary);
+      }
+
+      .nutrient-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .nutrient-box {
+        background-color: white;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .nutrient-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .nutrient-box h4 {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        font-weight: normal;
+      }
+
+      .nutrient-box span {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-dark);
+      }
+
+      .alternative-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 5px 0;
+      }
+
+      .alternative-item i {
+        color: var(--success);
+      }
+
+      .calorie-save {
+        font-weight: 600;
+        color: var(--success);
+      }
+
+      /* Macro distribution */
+      .macro-distribution {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        gap: 10px;
+      }
+
+      .macro-bar {
+        flex: 1;
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        display: flex;
+      }
+
+      .macro-protein {
+        background-color: #ff3b30;
+        width: 30%;
+        height: 100%;
+      }
+
+      .macro-carbs {
+        background-color: #5ac8fa;
+        width: 45%;
+        height: 100%;
+      }
+
+      .macro-fat {
+        background-color: #ffcc00;
+        width: 25%;
+        height: 100%;
+      }
+
+      .macro-legend {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        color: var(--text-light);
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+      }
+
+      .color-protein {
+        background-color: #ff3b30;
+      }
+
+      .color-carbs {
+        background-color: #5ac8fa;
+      }
+
+      .color-fat {
+        background-color: #ffcc00;
+      }
+
+      .empty-image-preview {
+        background-color: rgba(90, 200, 250, 0.05);
+        border-radius: 12px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        border: 1px dashed rgba(90, 200, 250, 0.3);
+      }
+
+      .empty-image-preview i {
+        font-size: 3rem;
+        color: rgba(90, 200, 250, 0.3);
+        margin-bottom: 10px;
+      }
+
+      .empty-image-preview p {
+        color: var(--text-light);
+      }
+
+      /* Water Tracker Styles */
+      .water-tracker-card {
+        background: linear-gradient(135deg, #0099f7, #0077cc);
+        color: white;
+      }
+
+      .water-tracker-card h2,
+      .water-tracker-card h2 i {
+        color: white;
+      }
+
+      .water-intake-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin: 20px 0;
+        position: relative;
+        height: 160px;
+      }
+
+      .water-glass {
+        position: relative;
+        width: 80px;
+        height: 140px;
+        margin: 0 auto;
+      }
+
+      .glass-outline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 3px solid rgba(255, 255, 255, 0.7);
+        border-radius: 5px 5px 20px 20px;
+        overflow: hidden;
+      }
+
+      .water-fill {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 37.5%;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 0 0 17px 17px;
+        transition: height 0.5s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) inset;
+      }
+
+      .water-bubbles {
+        position: absolute;
+        width: 100%;
+        height: 20px;
+        bottom: 0;
+        left: 0;
+      }
+
+      .bubble {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        animation: bubble-rise 2s infinite ease-in-out;
+      }
+
+      .bubble:nth-child(1) {
+        width: 8px;
+        height: 8px;
+        left: 15%;
+        bottom: 5px;
+        animation-delay: 0.2s;
+      }
+
+      .bubble:nth-child(2) {
+        width: 6px;
+        height: 6px;
+        left: 40%;
+        bottom: 10px;
+        animation-delay: 0.8s;
+      }
+
+      .bubble:nth-child(3) {
+        width: 10px;
+        height: 10px;
+        left: 65%;
+        bottom: 8px;
+        animation-delay: 0.5s;
+      }
+
+      @keyframes bubble-rise {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(-20px) scale(0.5);
+          opacity: 0;
+        }
+      }
+
+      .water-stats {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .water-stats .value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .water-stats .label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .water-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .water-control-btn {
+        width: 48%;
+        padding: 12px;
+        border-radius: 30px;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .add-water-btn {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #0077cc;
+      }
+
+      .add-water-btn:hover {
+        background-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .reset-water-btn {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+      }
+
+      .reset-water-btn:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .water-goal-text {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .water-indicator {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .water-indicator:nth-child(1) {
+        top: 5px;
+      }
+
+      .water-indicator:nth-child(2) {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .water-indicator:nth-child(3) {
+        bottom: 5px;
+      }
+
+      .water-cups {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+
+      .water-cup {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .water-cup.filled {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #0077cc;
+      }
+
+      .water-cup i {
+        font-size: 1rem;
+      }
+      .back-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      a{
+        text-decoration: none;
+      }
+
+      .back-button:hover {
+        background-color: #e0e0e0;
+      }
+
+      .back-button i {
+        color: #333;
+        font-size: 16px;
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .nutrition-item {
+        background: var(--background-alt);
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .food-items-container {
+        margin-top: 20px;
+      }
+
+      .food-item-result {
+        background: var(--background);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: var(--shadow);
+      }
+
+      .food-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .food-confidence {
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .food-item-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .food-nutrition {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .food-portion {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .food-portion input {
+        width: 80px;
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+      }
+    </style>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a href="dashboard.html"><div class="back-button">
+            <i class="fas fa-arrow-left"></i>
+          </div></a>
+          <div class="logo"><i class="fas fa-leaf"></i> NutriTrack</div>
+          <div class="user-nav">
+            <div class="user-icon">
+              <i class="fas fa-user"></i>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="dashboard">
+        <div class="main-column">
+          <!-- Daily Summary Card -->
+          <div class="card summary-card">
+            <h2><i class="fas fa-chart-pie"></i> Daily Summary</h2>
+
+            <div class="circular-progress">
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <circle class="circle-bg" cx="90" cy="90" r="80" />
+                <circle
+                  class="circle-progress"
+                  cx="90"
+                  cy="90"
+                  r="80"
+                  stroke-dasharray="503"
+                  stroke-dashoffset="180"
+                />
+              </svg>
+              <div class="progress-text">
+                <div class="big-text">65%</div>
+                <div class="small-text">of daily goal</div>
+              </div>
+            </div>
+
+            <div class="calorie-numbers">
+              <div class="calorie-item">
+                <h3>Consumed</h3>
+                <div class="value">1,450</div>
+              </div>
+              <div class="calorie-item">
+                <h3>Goal</h3>
+                <div class="value">2,200</div>
+              </div>
+              <div class="calorie-item">
+                <h3>Remaining</h3>
+                <div class="value">750</div>
+              </div>
+            </div>
+
+            <div class="gradient-overlay"></div>
+          </div>
+
+          <!-- Water Tracker Card -->
+          <div class="card water-tracker-card">
+            <h2><i class="fas fa-tint"></i> Water Intake Tracker</h2>
+
+            <div class="water-intake-container">
+              <div class="water-indicator">2L</div>
+              <div class="water-indicator">1L</div>
+              <div class="water-indicator">0L</div>
+
+              <div class="water-glass">
+                <div class="glass-outline"></div>
+                <div class="water-fill">
+                  <div class="water-bubbles">
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="water-stats">
+              <div class="value">750 ml</div>
+              <div class="label">of 2000 ml daily goal</div>
+            </div>
+
+            <div class="water-cups">
+              <div class="water-cup filled">
+                <i class="fas fa-glass-water"></i>
+              </div>
+              <div class="water-cup filled">
+                <i class="fas fa-glass-water"></i>
+              </div>
+              <div class="water-cup filled">
+                <i class="fas fa-glass-water"></i>
+              </div>
+              <div class="water-cup"><i class="fas fa-glass-water"></i></div>
+              <div class="water-cup"><i class="fas fa-glass-water"></i></div>
+              <div class="water-cup"><i class="fas fa-glass-water"></i></div>
+              <div class="water-cup"><i class="fas fa-glass-water"></i></div>
+              <div class="water-cup"><i class="fas fa-glass-water"></i></div>
+            </div>
+
+            <div class="water-controls">
+              <button class="water-control-btn add-water-btn">
+                <i class="fas fa-plus"></i> Add Glass
+              </button>
+              <button class="water-control-btn reset-water-btn">
+                <i class="fas fa-refresh"></i> Reset
+              </button>
+            </div>
+
+            <div class="water-goal-text">
+              Recommended: 8 glasses (2000 ml) per day
+            </div>
+          </div>
+
+          <!-- Food Image Analysis Card -->
+          <div class="card">
+            <h2><i class="fas fa-camera"></i> Food Image Analysis</h2>
+
+            <div class="upload-area" id="upload-area">
+              <div class="icon-container">
+                <i class="fas fa-camera"></i>
+              </div>
+              <h3>Take a Food Photo</h3>
+              <p>Capture your meal to analyze its nutritional content</p>
+              <div class="button-group">
+                <button class="btn btn-primary" onclick="startCamera()">
+                  <i class="fas fa-camera"></i> Open Camera
+                </button>
+                <input type="file" id="file-input" accept="image/*" style="display: none" onchange="handleFileSelect(event)">
+                <button class="btn btn-outline" onclick="document.getElementById('file-input').click()">
+                  <i class="fas fa-upload"></i> Upload Image
+                </button>
+              </div>
+              <div id="camera-container" style="display: none; margin-top: 20px;">
+                <video id="camera-feed" autoplay playsinline style="width: 100%; max-width: 500px; border-radius: 12px;"></video>
+                <div style="margin-top: 15px; text-align: center;">
+                  <button class="btn btn-primary" onclick="captureImage()">
+                    <i class="fas fa-camera"></i> Capture
+                  </button>
+                  <button class="btn btn-outline" style="margin-left: 10px" onclick="stopCamera()">
+                    <i class="fas fa-times"></i> Cancel
+                  </button>
+                </div>
+              </div>
+              <div id="image-preview" style="display: none; margin-top: 20px;">
+                <img id="preview-img" style="max-width: 100%; border-radius: 12px;">
+                <div style="margin-top: 15px; text-align: center;">
+                  <button class="btn btn-primary" onclick="analyzeImage()">
+                    <i class="fas fa-search"></i> Analyze Food
+                  </button>
+                  <button class="btn btn-outline" style="margin-left: 10px" onclick="resetImage()">
+                    <i class="fas fa-redo"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="food-analysis-results" style="display: none; margin-top: 20px;">
+              <h3>Analysis Results</h3>
+              <div class="food-items-container"></div>
+              <div class="nutrition-summary">
+                <h4>Total Nutrition</h4>
+                <div class="nutrition-grid">
+                  <div class="nutrition-item">
+                    <span>Calories:</span>
+                    <span id="analysis-total-calories">0</span>
+                  </div>
+                  <div class="nutrition-item">
+                    <span>Protein:</span>
+                    <span id="analysis-total-protein">0g</span>
+                  </div>
+                  <div class="nutrition-item">
+                    <span>Carbs:</span>
+                    <span id="analysis-total-carbs">0g</span>
+                  </div>
+                  <div class="nutrition-item">
+                    <span>Fat:</span>
+                    <span id="analysis-total-fat">0g</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meals Card -->
+          <div class="card">
+            <div class="meals-header">
+              <h2><i class="fas fa-utensils"></i> Today's Meals</h2>
+              <button class="btn btn-accent">
+                <i class="fas fa-plus"></i> Add Meal
+              </button>
+            </div>
+
+            <div class="meal-list">
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-coffee"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Breakfast</h4>
+                    <p>Oatmeal with banana</p>
+                  </div>
+                </div>
+                <div class="meal-calories">320 cal</div>
+              </div>
+
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-utensils"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Lunch</h4>
+                    <p>Grilled chicken salad</p>
+                  </div>
+                </div>
+                <div class="meal-calories">520 cal</div>
+              </div>
+
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-apple-alt"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Snack</h4>
+                    <p>Greek yogurt with berries</p>
+                  </div>
+                </div>
+                <div class="meal-calories">180 cal</div>
+              </div>
+
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-hamburger"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Dinner</h4>
+                    <p>Salmon with quinoa and vegetables</p>
+                  </div>
+                </div>
+                <div class="meal-calories">430 cal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-column">
+          <!-- Nutrition Recommendations Card -->
+          <div class="card">
+            <h2>
+              <i class="fas fa-lightbulb"></i> Personalized Recommendations
+            </h2>
+
+            <div class="suggestions-section">
+              <h3>Macro Distribution</h3>
+              <div class="macro-distribution">
+                <div class="macro-bar">
+                  <div class="macro-protein"></div>
+                  <div class="macro-carbs"></div>
+                  <div class="macro-fat"></div>
+                </div>
+              </div>
+
+              <div class="macro-legend">
+                <div class="legend-item">
+                  <div class="legend-color color-protein"></div>
+                  <span>Protein 30%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color color-carbs"></div>
+                  <span>Carbs 45%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color color-fat"></div>
+                  <span>Fat 25%</span>
+                </div>
+              </div>
+
+              <h3>Current Nutrient Intake</h3>
+              <div class="nutrient-grid">
+                <div class="nutrient-box">
+                  <h4>Protein</h4>
+                  <span>72g</span>
+                </div>
+                <div class="nutrient-box">
+                  <h4>Carbs</h4>
+                  <span>163g</span>
+                </div>
+                <div class="nutrient-box">
+                  <h4>Fat</h4>
+                  <span>58g</span>
+                </div>
+                <div class="nutrient-box">
+                  <h4>Fiber</h4>
+                  <span>28g</span>
+                </div>
+                <div class="nutrient-box">
+                  <h4>Sugar</h4>
+                  <span>42g</span>
+                </div>
+                <div class="nutrient-box">
+                  <h4>Sodium</h4>
+                  <span>1830mg</span>
+                </div>
+              </div>
+
+              <h3>Personalized Suggestions</h3>
+              <div class="suggestion-card">
+                <div class="suggestion-title">
+                  <i class="fas fa-bolt"></i> Increase Your Iron Intake
+                </div>
+                <p>
+                  Your iron levels are lower than recommended. Consider adding
+                  these iron-rich foods to your meals:
+                </p>
+
+                <div class="alternative-items">
+                  <div class="alternative-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Spinach (3.6mg per cup)</span>
+                  </div>
+                  <div class="alternative-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Lentils (6.6mg per cup)</span>
+                  </div>
+                  <div class="alternative-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Turkey (2.3mg per 3oz)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="suggestion-card">
+                <div class="suggestion-title">
+                  <i class="fas fa-exchange-alt"></i> Try These Alternatives
+                </div>
+                <p>
+                  Instead of your usual breakfast, consider these healthier
+                  options:
+                </p>
+
+                <div class="alternative-items">
+                  <div class="alternative-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Greek yogurt with nuts and berries</span>
+                    <span class="calorie-save">-120 cal</span>
+                  </div>
+                  <div class="alternative-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Avocado toast with egg</span>
+                    <span class="calorie-save">-85 cal</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Meal Plan Card -->
+          <div class="card">
+            <h2><i class="fas fa-calendar-alt"></i> Upcoming Meal Plan</h2>
+
+            <div class="meal-list">
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-sun"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Tomorrow's Breakfast</h4>
+                    <p>Protein pancakes with berries</p>
+                  </div>
+                </div>
+                <div class="meal-calories">340 cal</div>
+              </div>
+
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-cloud-sun"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Tomorrow's Lunch</h4>
+                    <p>Quinoa bowl with veggies and tofu</p>
+                  </div>
+                </div>
+                <div class="meal-calories">450 cal</div>
+              </div>
+
+              <div class="meal-item">
+                <div class="meal-info">
+                  <div class="meal-icon">
+                    <i class="fas fa-moon"></i>
+                  </div>
+                  <div class="meal-details">
+                    <h4>Tomorrow's Dinner</h4>
+                    <p>Grilled fish with roasted vegetables</p>
+                  </div>
+                </div>
+                <div class="meal-calories">380 cal</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center">
+              <button class="btn btn-outline">
+                <i class="fas fa-edit"></i> Edit Meal Plan
+              </button>
+            </div>
+          </div>
+
+          <!-- Weekly Progress Card -->
+          <div class="card">
+            <h2><i class="fas fa-chart-line"></i> Weekly Progress</h2>
+
+            <div style="margin: 20px 0">
+              <div style="margin-bottom: 15px">
+                <h4 style="margin-bottom: 5px">Calories Consumed</h4>
+                <div
+                  style="
+                    height: 10px;
+                    background-color: #f0f0f0;
+                    border-radius: 5px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    style="
+                      width: 85%;
+                      height: 100%;
+                      background-color: var(--primary);
+                      border-radius: 5px;
+                    "
+                  ></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+                    font-size: 0.9rem;
+                    color: var(--text-light);
+                  "
+                >
+                  <span>10,850 / 12,800 cal</span>
+                  <span>85%</span>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 15px">
+                <h4 style="margin-bottom: 5px">Protein Goal</h4>
+                <div
+                  style="
+                    height: 10px;
+                    background-color: #f0f0f0;
+                    border-radius: 5px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    style="
+                      width: 92%;
+                      height: 100%;
+                      background-color: var(--primary);
+                      border-radius: 5px;
+                    "
+                  ></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+                    font-size: 0.9rem;
+                    color: var(--text-light);
+                  "
+                >
+                  <span>460 / 500 g</span>
+                  <span>92%</span>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 15px">
+                <h4 style="margin-bottom: 5px">Water Goal</h4>
+                <div
+                  style="
+                    height: 10px;
+                    background-color: #f0f0f0;
+                    border-radius: 5px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    style="
+                      width: 78%;
+                      height: 100%;
+                      background-color: var(--primary);
+                      border-radius: 5px;
+                    "
+                  ></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+                    font-size: 0.9rem;
+                    color: var(--text-light);
+                  "
+                >
+                  <span>10.9 / 14 L</span>
+                  <span>78%</span>
+                </div>
+              </div>
+
+              <div>
+                <h4 style="margin-bottom: 5px">Exercise Minutes</h4>
+                <div
+                  style="
+                    height: 10px;
+                    background-color: #f0f0f0;
+                    border-radius: 5px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    style="
+                      width: 65%;
+                      height: 100%;
+                      background-color: var(--primary);
+                      border-radius: 5px;
+                    "
+                  ></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+                    font-size: 0.9rem;
+                    color: var(--text-light);
+                  "
+                >
+                  <span>195 / 300 min</span>
+                  <span>65%</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px">
+              <button class="btn btn-success">
+                <i class="fas fa-download"></i> Export Progress Report
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // JavaScript for Water Tracker functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const waterFill = document.querySelector(".water-fill");
+        const waterStats = document.querySelector(".water-stats .value");
+        const addWaterBtn = document.querySelector(".add-water-btn");
+        const resetWaterBtn = document.querySelector(".reset-water-btn");
+        const waterCups = document.querySelectorAll(".water-cup");
+
+        let currentWater = 750; // Current water in ml
+        const waterGoal = 2000; // Water goal in ml
+        const glassSize = 250; // Size of one glass in ml
+
+        function updateWaterDisplay() {
+          const percentage = (currentWater / waterGoal) * 100;
+          waterFill.style.height = Math.min(percentage, 100) + "%";
+          waterStats.textContent = currentWater + " ml";
+
+          // Update water cups display
+          const filledCups = Math.floor(currentWater / glassSize);
+          waterCups.forEach((cup, index) => {
+            if (index < filledCups) {
+              cup.classList.add("filled");
+            } else {
+              cup.classList.remove("filled");
+            }
+          });
+        }
+
+        addWaterBtn.addEventListener("click", function () {
+          currentWater = Math.min(currentWater + glassSize, waterGoal);
+          updateWaterDisplay();
+        });
+
+        resetWaterBtn.addEventListener("click", function () {
+          currentWater = 0;
+          updateWaterDisplay();
+        });
+
+        // Initialize display
+        updateWaterDisplay();
+
+        // Circular progress animation for calorie intake
+        const circleProgress = document.querySelector(".circle-progress");
+        const caloriePercentage = 65; // This would be dynamic based on actual data
+        const circumference = 2 * Math.PI * 80; // 80 is the radius
+
+        circleProgress.style.strokeDasharray = circumference;
+        circleProgress.style.strokeDashoffset =
+          circumference * (1 - caloriePercentage / 100);
+      });
+
+      // User authentication and session management
+      let currentUser = null;
+      let nutritionLogs = [];
+      
+      // Check if user is logged in
+      function checkAuth() {
+        const userData = localStorage.getItem('userData');
+        if (!userData) {
+          window.location.href = '/login.html';
+          return;
+        }
+        
+        currentUser = JSON.parse(userData);
+        document.getElementById('user-name').textContent = currentUser.name;
+        
+        // Load nutrition data
+        loadNutritionData();
+      }
+      
+      // Load nutrition data
+      async function loadNutritionData() {
+        try {
+          const response = await fetch(`/api/nutrition/logs?userId=${currentUser.id}`);
+          if (!response.ok) throw new Error('Failed to fetch nutrition data');
+          
+          nutritionLogs = await response.json();
+          
+          // Update nutrition stats
+          updateNutritionStats();
+          
+          // Update meal history
+          updateMealHistory();
+          
+        } catch (error) {
+          console.error('Error loading nutrition data:', error);
+          showNotification('Failed to load nutrition data', 'error');
+        }
+      }
+      
+      // Update nutrition stats
+      function updateNutritionStats() {
+        const today = new Date().toISOString().split('T')[0];
+        const todayLogs = nutritionLogs.filter(log => log.timestamp.startsWith(today));
+        
+        // Calculate daily totals
+        const totalCalories = todayLogs.reduce((sum, log) => sum + (log.calories || 0), 0);
+        const protein = todayLogs.reduce((sum, log) => sum + (log.protein || 0), 0);
+        const carbs = todayLogs.reduce((sum, log) => sum + (log.carbs || 0), 0);
+        const fat = todayLogs.reduce((sum, log) => sum + (log.fat || 0), 0);
+        
+        // Update UI
+        document.getElementById('calories-consumed').textContent = totalCalories;
+        document.getElementById('protein-consumed').textContent = `${protein}g`;
+        document.getElementById('carbs-consumed').textContent = `${carbs}g`;
+        document.getElementById('fat-consumed').textContent = `${fat}g`;
+        
+        // Update progress bars
+        updateProgressBar('calories-progress', totalCalories, 2000); // Assuming 2000 calories daily goal
+        updateProgressBar('protein-progress', protein, 50); // Assuming 50g protein daily goal
+        updateProgressBar('carbs-progress', carbs, 250); // Assuming 250g carbs daily goal
+        updateProgressBar('fat-progress', fat, 70); // Assuming 70g fat daily goal
+      }
+      
+      // Update progress bar
+      function updateProgressBar(elementId, value, max) {
+        const progressBar = document.getElementById(elementId);
+        if (!progressBar) return;
+        
+        const percentage = Math.min(100, (value / max) * 100);
+        progressBar.style.width = `${percentage}%`;
+        
+        // Change color based on percentage
+        if (percentage < 50) {
+          progressBar.style.backgroundColor = 'var(--primary)';
+        } else if (percentage < 80) {
+          progressBar.style.backgroundColor = 'var(--accent)';
+        } else {
+          progressBar.style.backgroundColor = 'var(--success)';
+        }
+      }
+      
+      // Update meal history
+      function updateMealHistory() {
+        const mealHistoryContainer = document.getElementById('meal-history');
+        if (!mealHistoryContainer) return;
+        
+        // Sort logs by timestamp (newest first)
+        const sortedLogs = [...nutritionLogs].sort((a, b) => 
+          new Date(b.timestamp) - new Date(a.timestamp)
+        );
+        
+        // Group logs by date
+        const groupedLogs = {};
+        sortedLogs.forEach(log => {
+          const date = log.timestamp.split('T')[0];
+          if (!groupedLogs[date]) {
+            groupedLogs[date] = [];
+          }
+          groupedLogs[date].push(log);
+        });
+        
+        // Generate HTML for meal history
+        let mealHistoryHTML = '';
+        
+        Object.keys(groupedLogs).forEach(date => {
+          const logs = groupedLogs[date];
+          const formattedDate = formatDate(date);
+          
+          mealHistoryHTML += `
+            <div class="meal-day">
+              <h3>${formattedDate}</h3>
+              <div class="meal-items">
+          `;
+          
+          logs.forEach(log => {
+            const foodItems = JSON.parse(log.food_items || '[]');
+            const foodItemsHTML = foodItems.map(item => 
+              `<div class="food-item">
+                <span class="food-name">${item.name}</span>
+                <span class="food-calories">${item.calories} cal</span>
+              </div>`
+            ).join('');
+            
+            mealHistoryHTML += `
+              <div class="meal-item">
+                <div class="meal-header">
+                  <h4>${log.meal_type}</h4>
+                  <span class="meal-time">${formatTime(log.timestamp)}</span>
+                </div>
+                <div class="food-items">
+                  ${foodItemsHTML}
+                </div>
+                <div class="meal-summary">
+                  <span>Total: ${log.calories} calories</span>
+                  <span>P: ${log.protein || 0}g | C: ${log.carbs || 0}g | F: ${log.fat || 0}g</span>
+                </div>
+              </div>
+            `;
+          });
+          
+          mealHistoryHTML += `
+              </div>
+            </div>
+          `;
+        });
+        
+        mealHistoryContainer.innerHTML = mealHistoryHTML || '<p>No meal history found</p>';
+      }
+      
+      // Add a new meal
+      async function addMeal(mealData) {
+        try {
+          const response = await fetch('/api/nutrition/logs', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              userId: currentUser.id,
+              ...mealData
+            })
+          });
+          
+          if (!response.ok) throw new Error('Failed to add meal');
+          
+          const newMeal = await response.json();
+          nutritionLogs.push(newMeal);
+          
+          // Update UI
+          updateNutritionStats();
+          updateMealHistory();
+          
+          showNotification('Meal added successfully', 'success');
+        } catch (error) {
+          console.error('Error adding meal:', error);
+          showNotification('Failed to add meal', 'error');
+        }
+      }
+      
+      // Analyze food image for calorie estimation
+      async function analyzeFoodImage(imageData) {
+        try {
+          const response = await fetch('/api/nutrition/analyze', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              imageData: imageData
+            })
+          });
+          
+          if (!response.ok) throw new Error('Failed to analyze food image');
+          
+          const analysis = await response.json();
+          
+          // Update UI with analysis results
+          updateFoodAnalysisResults(analysis);
+          
+          return analysis;
+        } catch (error) {
+          console.error('Error analyzing food image:', error);
+          showNotification('Failed to analyze food image', 'error');
+          return null;
+        }
+      }
+      
+      // Update food analysis results in the UI
+      function updateFoodAnalysisResults(analysis) {
+        const resultsContainer = document.getElementById('food-analysis-results');
+        if (!resultsContainer) return;
+        
+        // Generate HTML for food items
+        const foodItemsHTML = analysis.foodItems.map(item => `
+          <div class="food-item-result">
+            <div class="food-item-header">
+              <h4>${item.name}</h4>
+              <span class="food-confidence">${Math.round(item.confidence * 100)}% confidence</span>
+            </div>
+            <div class="food-item-details">
+              <div class="food-nutrition">
+                <span>Calories: ${item.calories || 0}</span>
+                <span>Protein: ${item.protein || 0}g</span>
+                <span>Carbs: ${item.carbs || 0}g</span>
+                <span>Fat: ${item.fat || 0}g</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        // Update results container
+        resultsContainer.innerHTML = foodItemsHTML || '<p>No food items detected</p>';
+        
+        // Show the results container
+        resultsContainer.style.display = 'block';
+        
+        // Update total nutrition
+        const nutrition = analysis.nutrition;
+        document.getElementById('analysis-total-calories').textContent = nutrition.calories;
+        document.getElementById('analysis-total-protein').textContent = `${nutrition.protein}g`;
+        document.getElementById('analysis-total-carbs').textContent = `${nutrition.carbs}g`;
+        document.getElementById('analysis-total-fat').textContent = `${nutrition.fat}g`;
+      }
+      
+      // Start camera
+      async function startCamera() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            } 
+          });
+          const video = document.getElementById('camera-feed');
+          video.srcObject = stream;
+          video.play();
+          
+          // Show camera container and hide other elements
+          document.getElementById('camera-container').style.display = 'block';
+          document.getElementById('image-preview').style.display = 'none';
+          document.querySelector('.icon-container').style.display = 'none';
+          document.querySelector('h3').style.display = 'none';
+          document.querySelector('p').style.display = 'none';
+          document.querySelector('.button-group').style.display = 'none';
+        } catch (error) {
+          console.error('Error accessing camera:', error);
+          showNotification('Failed to access camera', 'error');
+        }
+      }
+      
+      // Stop camera
+      function stopCamera() {
+        const video = document.getElementById('camera-feed');
+        if (video.srcObject) {
+          const tracks = video.srcObject.getTracks();
+          tracks.forEach(track => track.stop());
+          video.srcObject = null;
+        }
+        
+        // Hide camera container and show other elements
+        document.getElementById('camera-container').style.display = 'none';
+        document.querySelector('.icon-container').style.display = 'flex';
+        document.querySelector('h3').style.display = 'block';
+        document.querySelector('p').style.display = 'block';
+        document.querySelector('.button-group').style.display = 'block';
+      }
+      
+      // Capture image from camera
+      function captureImage() {
+        const video = document.getElementById('camera-feed');
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        
+        // Set canvas dimensions to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Draw the current video frame on the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Get the image data as base64
+        const imageData = canvas.toDataURL('image/jpeg');
+        
+        // Stop the camera
+        stopCamera();
+        
+        // Show the image preview
+        showImagePreview(imageData);
+      }
+      
+      // Handle file selection
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            showImagePreview(e.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      
+      // Show image preview
+      function showImagePreview(imageData) {
+        const previewImg = document.getElementById('preview-img');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadArea = document.getElementById('upload-area');
+        
+        previewImg.src = imageData;
+        imagePreview.style.display = 'block';
+        
+        // Hide the icon and text
+        uploadArea.querySelector('.icon-container').style.display = 'none';
+        uploadArea.querySelector('h3').style.display = 'none';
+        uploadArea.querySelector('p').style.display = 'none';
+        uploadArea.querySelector('.button-group').style.display = 'none';
+      }
+      
+      // Reset image preview
+      function resetImage() {
+        const imagePreview = document.getElementById('image-preview');
+        const uploadArea = document.getElementById('upload-area');
+        
+        imagePreview.style.display = 'none';
+        
+        // Show the icon and text
+        uploadArea.querySelector('.icon-container').style.display = 'flex';
+        uploadArea.querySelector('h3').style.display = 'block';
+        uploadArea.querySelector('p').style.display = 'block';
+        uploadArea.querySelector('.button-group').style.display = 'block';
+      }
+      
+      // Analyze image
+      async function analyzeImage() {
+        const previewImg = document.getElementById('preview-img');
+        const imageData = previewImg.src;
+        
+        try {
+          // First check if the Flask server is running
+          const testResponse = await fetch('http://localhost:5000/test');
+          if (!testResponse.ok) {
+            throw new Error('Flask server is not running');
+          }
+          
+          // Send the image data to the Flask server
+          const analysisResponse = await fetch('http://localhost:5000/analyze', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              imageData: imageData
+            })
+          });
+          
+          if (!analysisResponse.ok) {
+            throw new Error('Failed to analyze image');
+          }
+          
+          const analysis = await analysisResponse.json();
+          updateFoodAnalysisResults(analysis);
+          
+        } catch (error) {
+          console.error('Error analyzing food:', error);
+          showNotification(error.message || 'Failed to analyze food image', 'error');
+        }
+      }
+      
+      // Helper functions
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      }
+      
+      function formatTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      }
+      
+      function showNotification(message, type = 'info') {
+        // Implementation for showing notifications
+        console.log(`${type.toUpperCase()}: ${message}`);
+      }
+      
+      // Event listeners
+      document.addEventListener('DOMContentLoaded', checkAuth);
+      
+      // Navigation functions
+      function navigateTo(page) {
+        window.location.href = `/${page}.html`;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Nutrition Planning App - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            height: 10px;
+            background: linear-gradient(90deg, #43cea2, #185a9d);
+            box-shadow: 0 0 20px rgba(67, 206, 162, 0.5);
+        }
+        
+        .app-logo {
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .app-logo i {
+            font-size: 52px;
+            color: #185a9d;
+            background: rgba(67, 206, 162, 0.15);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            transition: all 0.3s ease;
+        }
+        
+        .app-logo:hover i {
+            transform: scale(1.05);
+            color: #43cea2;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #185a9d;
+            letter-spacing: 0.5px;
+        }
+        
+        .description {
+            color: #555;
+            margin-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            transition: all 0.3s;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            color: #fff;
+            transform: translateY(-3px);
+        }
+        
+        .btn:hover::before {
+            width: 100%;
+        }
+        
+        .btn-login {
+            color: white;
+            background-color: #185a9d;
+        }
+        
+        .btn-login::after {
+            background-color: #185a9d;
+        }
+        
+        .btn-login::before {
+            background-color: #1e3c72;
+        }
+        
+        .btn-signup {
+            color: white;
+            background-color: #43cea2;
+        }
+        
+        .btn-signup::after {
+            background-color: #43cea2;
+        }
+        
+        .btn-signup::before {
+            background-color: #2ebb92;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(67, 206, 162, 0.05);
+            z-index: 0;
+        }
+        
+        .decoration-1 {
+            top: -100px;
+            right: -100px;
+        }
+        
+        .decoration-2 {
+            bottom: -100px;
+            left: -100px;
+            background: rgba(24, 90, 157, 0.05);
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="decoration decoration-1"></div>
+        <div class="decoration decoration-2"></div>
+        
+        <div class="app-logo">
+            <i class="fas fa-leaf"></i>
+        </div>
+        
+        <h1>Welcome to Nutrition Planning App</h1>
+        
+        <p class="description">Your journey to a healthier life starts here. Please login or sign up to continue.</p>
+        
+        <div class="buttons">
+            <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i>Login</a>
+            <a href="register.html" class="btn btn-signup"><i class="fas fa-user-plus"></i>Sign Up</a>
+        </div>
+    </div>
+</body>
+</html>

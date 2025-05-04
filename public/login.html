@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Nutrition Planning App - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            height: 10px;
+            background: linear-gradient(90deg, #43cea2, #185a9d);
+            box-shadow: 0 0 20px rgba(67, 206, 162, 0.5);
+        }
+        
+        .app-logo {
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .app-logo i {
+            font-size: 40px;
+            color: #185a9d;
+            background: rgba(67, 206, 162, 0.15);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            transition: all 0.3s ease;
+        }
+        
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #185a9d;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+        
+        .form-group input:focus {
+            border-color: #43cea2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 206, 162, 0.2);
+            background-color: #fff;
+        }
+        
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+        
+        .form-group button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #185a9d, #43cea2);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+        
+        .form-group button:hover {
+            background: linear-gradient(to right, #1a4f85, #2ebb92);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-group a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #185a9d;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .form-group a:hover {
+            color: #43cea2;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+            padding: 8px;
+            border-radius: 30px;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(67, 206, 162, 0.05);
+            z-index: 0;
+        }
+        
+        .decoration-1 {
+            top: -100px;
+            right: -100px;
+        }
+        
+        .decoration-2 {
+            bottom: -100px;
+            left: -100px;
+            background: rgba(24, 90, 157, 0.05);
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .forgot-password a {
+            color: #888;
+            font-size: 12px;
+            margin-top: 0;
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="login-container">
+        <div class="decoration decoration-1"></div>
+        <div class="decoration decoration-2"></div>
+        
+        <div class="app-logo">
+            <i class="fas fa-leaf"></i>
+        </div>
+        
+        <h2>Welcome Back</h2>
+        
+        <div id="error-message" class="error-message">
+            Invalid email or password. Please try again.
+        </div>
+        
+        <div class="form-group">
+            <label for="login-email">Email</label>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="Enter your email">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+            <div class="forgot-password">
+                <a href="forgot-password.html">Forgot password?</a>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="button" id="login-btn">Login</button>
+        </div>
+        
+        <div class="form-group">
+            <a href="register.html">Don't have an account? Register</a>
+        </div>
+    </div>
+    
+    <script>
+        // API URL - Update this with your actual backend URL
+        const API_URL = '';
+        
+        document.getElementById('login-btn').addEventListener('click', login);
+        
+        async function login() {
+            // Get input values
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorMessage = document.getElementById('error-message');
+            const container = document.getElementById('login-container');
+            const loginButton = document.getElementById('login-btn');
+            
+            // Validate inputs
+            if (!email || !password) {
+                errorMessage.textContent = 'Please enter both email and password';
+                errorMessage.style.display = 'block';
+                container.classList.add('shake');
+                
+                setTimeout(function() {
+                    container.classList.remove('shake');
+                }, 500);
+                
+                return;
+            }
+            
+            // Show loading state
+            loginButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in...';
+            loginButton.disabled = true;
+            
+            try {
+                // Send login request to backend
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Login successful
+                    errorMessage.style.display = 'none';
+                    
+                    // Store user info in local storage for session management
+                    console.log('Login response:', data);
+                    console.log('User data to store:', data.user);
+                    
+                    try {
+                        // First clear any existing data
+                        localStorage.clear();
+                        
+                        // Store the data
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        localStorage.setItem('userId', data.user.id.toString());  // Convert to string
+                        localStorage.setItem('userEmail', data.user.email);
+                        
+                        // Verify storage immediately
+                        const storedData = {
+                            userData: localStorage.getItem('userData'),
+                            userId: localStorage.getItem('userId'),
+                            userEmail: localStorage.getItem('userEmail')
+                        };
+                        console.log('Stored data verification:', storedData);
+                        
+                        // Show success effect
+                        container.style.borderColor = '#43cea2';
+                        loginButton.innerHTML = '<i class="fas fa-check-circle"></i> Success!';
+                        
+                        // Redirect after verifying data is stored
+                        setTimeout(() => {
+                            const finalCheck = localStorage.getItem('userId');
+                            console.log('Final userId check before redirect:', finalCheck);
+                            if (finalCheck) {
+                                window.location.href = 'dashboard.html';
+                            } else {
+                                throw new Error('userId not found after storage');
+                            }
+                        }, 1000);
+                    } catch (error) {
+                        console.error('Error storing user data:', error);
+                        errorMessage.textContent = 'Error storing user data. Please try again.';
+                        errorMessage.style.display = 'block';
+                        loginButton.innerHTML = 'Login';
+                        loginButton.disabled = false;
+                    }
+                } else {
+                    // Login failed
+                    errorMessage.textContent = data.message || 'Invalid email or password';
+                    errorMessage.style.display = 'block';
+                    container.classList.add('shake');
+                    
+                    // Reset button
+                    loginButton.innerHTML = 'Login';
+                    loginButton.disabled = false;
+                    
+                    // Remove shake class after animation completes
+                    setTimeout(function() {
+                        container.classList.remove('shake');
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                // Server error
+                errorMessage.textContent = 'Server error. Please try again later.';
+                errorMessage.style.display = 'block';
+                
+                // Reset button
+                loginButton.innerHTML = 'Login';
+                loginButton.disabled = false;
+            }
+        }
+        
+        // Enable login on Enter key press
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>

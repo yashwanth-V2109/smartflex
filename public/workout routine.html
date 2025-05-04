@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Workout Routine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+   body {
+    font-family: 'Poppins', sans-serif;
+   }
+   .workout-header {
+    background: linear-gradient(135deg, #32fffc, #0bccf3);
+   }
+   .card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+   }
+   .badge {
+    background: linear-gradient(to right, #4f46e5, #2563eb);
+   }
+   .previous-card {
+    background: linear-gradient(to bottom right, #eff6ff, #dbeafe);
+   }
+   .suggestion-card {
+    background: linear-gradient(to bottom right, #f5f3ff, #ddd6fe);
+   }
+   @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+   }
+   .pulse-animation {
+    animation: pulse 2s infinite;
+   }
+   .chat-bubble {
+    position: relative;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 10px 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    max-width: 80%;
+    margin-bottom: 10px;
+   }
+   .chat-bubble:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: #ffffff;
+    border-bottom: 0;
+    margin-bottom: -10px;
+   }
+   .bot-avatar {
+    position: relative;
+   }
+   .status-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #10b981;
+    border: 2px solid white;
+   }
+  </style>
+ </head>
+ <body class="bg-gray-50">
+  <div class="flex flex-col items-center min-h-screen">
+   <!-- Top gradient bar -->
+   <div class="w-full workout-header h-2"></div>
+   
+   <!-- Navigation bar -->
+   <div class="flex justify-between items-center w-full px-6 py-3 bg-white shadow-sm">
+    <div class="flex items-center">
+     <div class="relative">
+      <img alt="Gym logo" class="w-12 h-12 rounded-full shadow-md border-2 border-indigo-100" src="/api/placeholder/48/48"/>
+      <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+       3
+      </div>
+     </div>
+     <div class="ml-4">
+      <h1 class="text-xl font-bold text-gray-800 hidden md:block">FitTrack</h1>
+      <p class="text-xs text-gray-500 hidden md:block">Personal Training Assistant</p>
+     </div>
+    </div>
+    <div class="flex items-center space-x-4">
+     <button class="text-gray-600 hover:text-indigo-500 transition p-2">
+      <i class="fas fa-search"></i>
+     </button>
+     <button class="relative text-gray-600 hover:text-indigo-500 transition p-2">
+      <i class="fas fa-bell"></i>
+      <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+       2
+      </span>
+     </button>
+     <button class="text-gray-600 hover:text-indigo-500 transition p-2">
+      <i class="fas fa-cog"></i>
+     </button>
+    </div>
+   </div>
+   
+   <!-- Title section -->
+   <div class="w-full text-center py-6 mt-2">
+    <h1 class="badge text-white text-lg font-bold py-2.5 px-8 rounded-full inline-block shadow-md transform hover:scale-105 transition-transform">
+     YOUR WORKOUT ROUTINE
+    </h1>
+    <p id="coach-info" class="text-indigo-600 font-medium mt-2">Customized by <span id="coach-name">Your Coach</span></p>
+   </div>
+   
+   <!-- Main content -->
+   <div class="flex flex-col md:flex-row w-full px-6 gap-6 max-w-7xl mx-auto mb-8">
+    <!-- Previous workout card -->
+    <div class="previous-card rounded-2xl p-6 flex-1 mb-6 md:mb-0 shadow-lg card-hover">
+     <h2 class="bg-blue-500 text-white text-lg font-bold py-2 px-6 rounded-full inline-block mb-6 shadow-md">
+      Previous Workout
+     </h2>
+     
+     <div id="previous-workout-container" class="space-y-4">
+      <!-- Dynamic previous workouts will be inserted here -->
+     </div>
+     
+     <div class="mt-4 flex justify-end">
+      <button class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition shadow">
+       <i class="fas fa-history mr-2"></i> View History
+      </button>
+     </div>
+    </div>
+    
+    <!-- Recommended workout card -->
+    <div class="suggestion-card rounded-2xl p-6 flex-1 shadow-lg card-hover">
+     <div class="flex items-center mb-6">
+      <img id="coach-avatar" alt="Trainer" class="w-12 h-12 rounded-full mr-4 border-2 border-indigo-300 shadow" src="/api/placeholder/48/48"/>
+      <h2 class="text-lg font-bold bg-indigo-500 text-white py-2 px-6 rounded-full shadow-md">
+       RECOMMENDED WORKOUT
+      </h2>
+     </div>
+     
+     <div id="recommended-workout-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Dynamic recommended workouts will be inserted here -->
+     </div>
+     
+     <div id="trainer-suggestion" class="bg-indigo-50 text-indigo-900 font-medium p-4 rounded-xl shadow border-l-4 border-indigo-500">
+      <div class="flex items-center">
+       <i class="fas fa-exclamation-circle text-indigo-600 mr-2 text-xl"></i>
+       <div>
+        <p class="font-bold">TRAINER SUGGESTION</p>
+        <p id="trainer-tip">Loading tip...</p>
+       </div>
+      </div>
+     </div>
+     
+     <div class="mt-6 flex justify-center">
+      <button class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 px-8 rounded-lg font-bold shadow-lg hover:shadow-xl transition transform hover:scale-105">
+       <i class="fas fa-play-circle mr-2"></i> Start Workout
+      </button>
+     </div>
+    </div>
+   </div>
+   
+   <!-- Stats Section -->
+   <div class="w-full max-w-7xl mx-auto px-6 mb-8">
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+     <h2 class="text-xl font-bold text-gray-800 mb-4">Workout Statistics</h2>
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-blue-50 p-4 rounded-xl">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-gray-500 text-sm">Total Weight</p>
+         <p id="total-weight" class="text-2xl font-bold">0 kg</p>
+        </div>
+        <div class="bg-blue-100 p-3 rounded-full">
+         <i class="fas fa-weight-hanging text-blue-600"></i>
+        </div>
+       </div>
+      </div>
+      
+      <div class="bg-green-50 p-4 rounded-xl">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-gray-500 text-sm">Calories</p>
+         <p id="total-calories" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-green-100 p-3 rounded-full">
+         <i class="fas fa-fire text-green-600"></i>
+        </div>
+       </div>
+      </div>
+      
+      <div class="bg-indigo-50 p-4 rounded-xl">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-gray-500 text-sm">Duration</p>
+         <p id="duration" class="text-2xl font-bold">0 min</p>
+        </div>
+        <div class="bg-indigo-100 p-3 rounded-full">
+         <i class="fas fa-clock text-indigo-600"></i>
+        </div>
+       </div>
+      </div>
+      
+      <div class="bg-yellow-50 p-4 rounded-xl">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-gray-500 text-sm">Progress</p>
+         <p id="progress" class="text-2xl font-bold">0%</p>
+        </div>
+        <div class="bg-yellow-100 p-3 rounded-full">
+         <i class="fas fa-chart-line text-yellow-600"></i>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   
+   <!-- Help section with chatbot -->
+   <div class="w-full max-w-7xl mx-auto px-6 mb-20">
+    <div class="bg-white rounded-2xl shadow-lg p-6 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">AI Fitness Assistant</h2>
+        <div class="flex space-x-2">
+          <button class="text-gray-400 hover:text-indigo-500">
+            <i class="fas fa-volume-up"></i>
+          </button>
+          <button class="text-gray-400 hover:text-indigo-500">
+            <i class="fas fa-expand"></i>
+          </button>
+          <button class="text-gray-400 hover:text-indigo-500">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="bg-gray-50 rounded-xl p-4 mb-4 h-64 overflow-y-auto">
+        <div class="flex items-start mb-4">
+          <div class="bot-avatar mr-2 flex-shrink-0">
+            <img src="/api/placeholder/40/40" alt="AI" class="w-10 h-10 rounded-full border-2 border-indigo-200">
+            <div class="status-dot"></div>
+          </div>
+          <div class="chat-bubble bg-indigo-50 text-indigo-900">
+            <p class="text-sm">Hi there! I'm your AI fitness assistant. How can I help with your workout today?</p>
+          </div>
+        </div>
+        
+        <div id="chat-container">
+          <!-- Dynamic chat messages will appear here -->
+        </div>
+      </div>
+      
+      <div class="flex items-center">
+        <input id="chat-input" type="text" placeholder="Ask me anything about your workout..." class="flex-1 border border-gray-300 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+        <button id="send-message" class="bg-indigo-600 text-white py-2 px-4 rounded-r-lg hover:bg-indigo-700 transition">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+      
+      <div class="absolute -top-3 -right-3">
+        <button class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-2 rounded-full shadow-lg hover:shadow-xl pulse-animation">
+          <i class="fas fa-robot"></i>
+        </button>
+      </div>
+    </div>
+   </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="fixed bottom-0 left-0 right-0 workout-header text-white py-2 px-6 flex justify-between items-center shadow-lg">
+   <div class="flex items-center">
+    <i class="fas fa-heartbeat mr-2"></i>
+    <span class="text-sm font-medium">Stay consistent for best results!</span>
+   </div>
+   <div class="flex space-x-6">
+    <button class="hover:text-indigo-200 transition">
+     <i class="fas fa-home"></i>
+    </button>
+    <button class="hover:text-indigo-200 transition">
+     <i class="fas fa-calendar-alt"></i>
+    </button>
+    <button class="hover:text-indigo-200 transition">
+     <i class="fas fa-chart-bar"></i>
+    </button>
+    <button class="hover:text-indigo-200 transition">
+     <i class="fas fa-user"></i>
+    </button>
+   </div>
+  </footer>
+
+  <script>
+    // Coach data
+    const coachesData = {
+      "strength": {
+        name: "Sarah Wilson",
+        specialty: "Strength Coach",
+        avatar: "/api/placeholder/48/48", // Using placeholder for demo
+        tips: [
+          "Focus on proper form to prevent injuries.",
+          "Remember to breathe out during the exertion phase.",
+          "Progressive overload is key to building strength.",
+          "Don't sacrifice form for heavier weights."
+        ]
+      },
+      "hiit": {
+        name: "Mike Johnson",
+        specialty: "HIIT Coach",
+        avatar: "/api/placeholder/48/48",
+        tips: [
+          "Keep your rest periods short but complete.",
+          "Maintain intensity throughout each interval.",
+          "Modify exercises as needed but keep moving.",
+          "Remember to stay hydrated between intervals."
+        ]
+      },
+      "yoga": {
+        name: "Emma Chen",
+        specialty: "Yoga Coach",
+        avatar: "/api/placeholder/48/48",
+        tips: [
+          "Focus on your breathing throughout the practice.",
+          "Don't push into pain, find your edge gently.",
+          "Use props when needed to support proper alignment.",
+          "Remember that yoga is a practice, not a competition."
+        ]
+      },
+      "cardio": {
+        name: "Jason Kim",
+        specialty: "Cardio Coach",
+        avatar: "/api/placeholder/48/48",
+        tips: [
+          "Start with a proper warm-up to prevent injuries.",
+          "Mix high and low intensity for optimal results.",
+          "Remember to include recovery days in your schedule.",
+          "Keep track of your heart rate to optimize training."
+        ]
+      }
+    };
+    
+    // Exercise database
+    const exerciseDatabase = {
+      "strength": {
+        "chest": [
+          { name: "BENCH PRESS", image: "/api/placeholder/128/128", sets: "12 x 4", intensity: "Primary", calories: 120 },
+          { name: "INCLINE PRESS", image: "/api/placeholder/128/128", sets: "10 x 3", intensity: "Secondary", calories: 100 },
+          { name: "DECLINE PRESS", image: "/api/placeholder/128/128", sets: "10 x 3", intensity: "Secondary", calories: 100 },
+          { name: "DUMBBELL FLY", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Secondary", calories: 80 },
+          { name: "CABLE CROSSOVER", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Auxiliary", calories: 70 },
+          { name: "PUSH-UPS", image: "/api/placeholder/128/128", sets: "20 x 3", intensity: "Auxiliary", calories: 60 },
+          { name: "PEC DECK", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Secondary", calories: 90 }
+        ],
+        "back": [
+          { name: "DEADLIFT", image: "/api/placeholder/128/128", sets: "8 x 4", intensity: "Primary", calories: 150 },
+          { name: "PULL-UPS", image: "/api/placeholder/128/128", sets: "10 x 4", intensity: "Primary", calories: 100 },
+          { name: "BENT OVER ROWS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Secondary", calories: 110 },
+          { name: "LAT PULLDOWNS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Secondary", calories: 90 },
+          { name: "T-BAR ROWS", image: "/api/placeholder/128/128", sets: "10 x 3", intensity: "Secondary", calories: 100 },
+          { name: "FACE PULLS", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Auxiliary", calories: 70 }
+        ],
+        "legs": [
+          { name: "SQUATS", image: "/api/placeholder/128/128", sets: "10 x 4", intensity: "Primary", calories: 150 },
+          { name: "LEG PRESS", image: "/api/placeholder/128/128", sets: "12 x 4", intensity: "Primary", calories: 130 },
+          { name: "LUNGES", image: "/api/placeholder/128/128", sets: "10 x 3", intensity: "Secondary", calories: 100 },
+          { name: "LEG EXTENSIONS", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Secondary", calories: 80 },
+          { name: "LEG CURLS", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Secondary", calories: 80 },
+          { name: "CALF RAISES", image: "/api/placeholder/128/128", sets: "20 x 3", intensity: "Auxiliary", calories: 60 }
+        ],
+        "arms": [
+          { name: "BICEP CURLS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Primary", calories: 70 },
+          { name: "TRICEP PUSHDOWNS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Primary", calories: 70 },
+          { name: "HAMMER CURLS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Secondary", calories: 60 },
+          { name: "SKULL CRUSHERS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Secondary", calories: 70 },
+          { name: "PREACHER CURLS", image: "/api/placeholder/128/128", sets: "10 x 3", intensity: "Secondary", calories: 60 },
+          { name: "OVERHEAD EXTENSIONS", image: "/api/placeholder/128/128", sets: "12 x 3", intensity: "Auxiliary", calories: 60 }
+        ]
+      },
+      "hiit": {
+        "fullBody": [
+          { name: "BURPEES", image: "/api/placeholder/128/128", sets: "20 x 3", intensity: "Primary", calories: 120 },
+          { name: "MOUNTAIN CLIMBERS", image: "/api/placeholder/128/128", sets: "30 x 3", intensity: "Primary", calories: 100 },
+          { name: "JUMP SQUATS", image: "/api/placeholder/128/128", sets: "20 x 3", intensity: "Primary", calories: 110 },
+          { name: "BATTLE ROPES", image: "/api/placeholder/128/128", sets: "30s x 4", intensity: "Secondary", calories: 90 },
+          { name: "BOX JUMPS", image: "/api/placeholder/128/128", sets: "15 x 3", intensity: "Secondary", calories: 100 },
+          { name: "KETTLEBELL SWINGS", image: "/api/placeholder/128/128", sets: "20 x 3", intensity: "Secondary", calories: 90 }
+        ],
+        "cardio": [
+          { name: "SPRINTS", image: "/api/placeholder/128/128", sets: "30s x 6", intensity: "Primary", calories: 150 },
+          { name: "JUMP ROPE", image: "/api/placeholder/128/128", sets: "60s x 5", intensity: "Primary", calories: 120 },
+          { name: "HIGH KNEES", image: "/api/placeholder/128/128", sets: "45s x 4", intensity: "Secondary", calories: 100 },
+          { name: "LATERAL JUMPS", image: "/api/placeholder/128/128", sets: "30s x 4", intensity: "Secondary", calories: 90 },
+          { name: "ROWING MACHINE", image: "/api/placeholder/128/128", sets: "60s x 4", intensity: "Secondary", calories: 110 },
+          { name: "STAIR CLIMBER", image: "/api/placeholder/128/128", sets: "45s x 4", intensity: "Secondary", calories: 100 }
+        ]
+      },
+      "yoga": {
+        "beginner": [
+          { name: "SUN SALUTATION", image: "/api/placeholder/128/128", sets: "5 rounds", intensity: "Primary", calories: 60 },
+          { name: "DOWNWARD DOG", image: "/api/placeholder/128/128", sets: "5 x 30s", intensity: "Primary", calories: 40 },
+          { name: "WARRIOR POSES", image: "/api/placeholder/128/128", sets: "Each side x 3", intensity: "Secondary", calories: 50 },
+          { name: "CHILD'S POSE", image: "/api/placeholder/128/128", sets: "5 x 30s", intensity: "Auxiliary", calories: 20 },
+          { name: "CAT-COW STRETCH", image: "/api/placeholder/128/128", sets: "10 rounds", intensity: "Auxiliary", calories: 30 },
+          { name: "SEATED FORWARD BEND", image: "/api/placeholder/128/128", sets: "5 x 30s", intensity: "Secondary", calories: 25 }
+        ],
+        "advanced": [
+          { name: "CROW POSE", image: "/api/placeholder/128/128", sets: "5 x 30s", intensity: "Primary", calories: 70 },
+          { name: "HEADSTAND", image: "/api/placeholder/128/128", sets: "3 x 60s", intensity: "Primary", calories: 60 },
+          { name: "WHEEL POSE", image: "/api/placeholder/128/128", sets: "5 x 30s", intensity: "Secondary", calories: 50 },
+          { name: "PIGEON POSE", image: "/api/placeholder/128/128", sets: "Each side x 60s", intensity: "Secondary", calories: 40 },
+          { name: "DANCER POSE", image: "/api/placeholder/128/128", sets: "Each side x 3", intensity: "Secondary", calories: 45 },
+          { name: "SHOULDER STAND", image: "/api/placeholder/128/128", sets: "3 x 60s", intensity: "Secondary", calories: 55 }
+        ]
+      },
+      "cardio": {
+        "endurance": [
+          { name: "LONG DISTANCE RUN", image: "/api/placeholder/128/128", sets: "30-45 mins", intensity: "Primary", calories: 350 },
+          { name: "CYCLING", image: "/api/placeholder/128/128", sets: "45-60 mins", intensity: "Primary", calories: 400 },
+          { name: "SWIMMING", image: "/api/placeholder/128/128", sets: "30 mins", intensity: "Primary", calories: 300 },
+          { name: "ELLIPTICAL", image: "/api/placeholder/128/128", sets: "30 mins", intensity: "Secondary", calories: 250 },
+          { name: "STAIR MASTER", image: "/api/placeholder/128/128", sets: "20 mins", intensity: "Secondary", calories: 200 },
+          { name: "ROWING", image: "/api/placeholder/128/128", sets: "20 mins", intensity: "Secondary", calories: 220 }
+        ],
+        "interval": [
+          { name: "SPRINT INTERVALS", image: "/api/placeholder/128/128", sets: "10 x 30s/30s", intensity: "Primary", calories: 250 },
+          { name: "HILL SPRINTS", image: "/api/placeholder/128/128", sets: "8 x 45s", intensity: "Primary", calories: 280 },
+          { name: "TABATA CYCLING", image: "/api/placeholder/128/128", sets: "8 rounds", intensity: "Primary", calories: 240 },
+          { name: "JUMPING JACKS", image: "/api/placeholder/128/128", sets: "100 x 3", intensity: "Secondary", calories: 150 },
+          { name: "JUMP ROPE INTERVALS", image: "/api/placeholder/128/128", sets: "10 x 60s", intensity: "Secondary", calories: 200 },
+          { name: "LADDER DRILLS", image: "/api/placeholder/128/128", sets: "5 rounds", intensity: "Secondary", calories: 180 }
+        ]
+      }
+    };
+
+    // Helper function to get URL parameters
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Helper function to select random elements from an array
+    function getRandomElements(array, count) {
+      const shuffled = [...array].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    // Helper function to get random number within a range
+    function getRandomInRange(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Function to create exercise card for recommended workout
+    function createRecommendedExerciseCard(exercise) {
+      const intensityColors = {
+        "Primary": "bg-green-100 text-green-800",
+        "Secondary": "bg-blue-100 text-blue-800",
+        "Auxiliary": "bg-yellow-100 text-yellow-800"
+      };
+      
+      return `
+        <div class="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition text-center">
+          <p class="font-bold text-gray-800 mb-2">${exercise.name}</p>
+          <img alt="${exercise.name}" class="w-32 h-32 mx-auto rounded-lg mb-2 border border-gray-200" src="${exercise.image}"/>
+          <p class="text-gray-600">${exercise.sets}</p>
+          <div class="mt-2 flex justify-center">
+            <span class="${intensityColors[exercise.intensity]} text-xs px-2 py-1 rounded-full">${exercise.intensity}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Function to create previous exercise item
+    function createPreviousExerciseItem(exercise) {
+      return `
+        <div class="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition">
+          <img alt="${exercise.name}" class="w-16 h-16 rounded-full mr-4 border-2 border-blue-100" src="${exercise.image}"/>
+          <div>
+            <p class="font-bold text-gray-800">${exercise.name}</p>
+            <p class="text-gray-600">${exercise.sets}</p>
+            <div class="mt-1 flex items-center">
+              <i class="fas fa-fire text-blue-500 mr-1"></i>
+              <span class="text-xs text-gray-500">${exercise.calories} calories</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Function to calculate total stats based on exercises
+    function calculateStats(exercises) {
+      // For demo purposes, we'll use some random values plus actual calorie counting
+      const totalCalories = exercises.reduce((sum, exercise) => sum + exercise.calories, 0);
+      
+      // Random but believable values for the other stats
+      const weight = getRandomInRange(2000, 4000);
+      const duration = getRandomInRange(30, 60);
+      const progress = getRandomInRange(5, 15);
+      
+      return {
+        weight: weight,
+        calories: totalCalories,
+        duration: duration,
+        progress: progress
+      };
+    }
+
+    // Function to add a chat message
+    function addChatMessage(message, isUser = false) {
+      const chatContainer = document.getElementById('chat-container');
+      
+      if (isUser) {
+        chatContainer.innerHTML += `
+          <div class="flex items-start justify-end mb-4">
+            <div class="chat-bubble bg-white text-gray-800 ml-auto">
+              <p class="text-sm">${message}</p>
+            </div>
+          </div>
+        `;
+      } else {
+        chatContainer.innerHTML += `
+          <div class="flex items-start mb-4">
+  <div class="bot-avatar mr-2 flex-shrink-0">
+    <img src="/api/placeholder/40/40" alt="AI" class="w-10 h-10 rounded-full border-2 border-indigo-200">
+    <div class="status-dot"></div>
+  </div>
+  <div class="chat-bubble bg-indigo-50 text-indigo-900">
+    <p class="text-sm">${message}</p>
+  </div>
+</div>
+`;
+      }
+      
+      // Scroll to bottom of chat container
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Initialize chat functionality
+    function initializeChat() {
+      const chatInput = document.getElementById('chat-input');
+      const sendButton = document.getElementById('send-message');
+      
+      const handleSendMessage = () => {
+        const message = chatInput.value.trim();
+        if (message) {
+          addChatMessage(message, true);
+          chatInput.value = '';
+          
+          // Simulate AI response after a short delay
+          setTimeout(() => {
+            let response;
+            if (message.toLowerCase().includes('exercise') || message.toLowerCase().includes('workout')) {
+              response = "I can help you with your workout routine! Would you like to know more about any specific exercise?";
+            } else if (message.toLowerCase().includes('diet') || message.toLowerCase().includes('nutrition')) {
+              response = "Nutrition is key to fitness success! Remember to balance your protein, carbs, and healthy fats for optimal results.";
+            } else if (message.toLowerCase().includes('help') || message.toLowerCase().includes('how')) {
+              response = "I can provide workout tips, explain exercises, track your progress, or just motivate you! What would you like assistance with?";
+            } else {
+              response = "I'm here to support your fitness journey! Let me know if you need workout advice, motivation, or have any fitness questions.";
+            }
+            addChatMessage(response);
+          }, 1000);
+        }
+      };
+      
+      sendButton.addEventListener('click', handleSendMessage);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleSendMessage();
+        }
+      });
+      
+      // Add initial bot message
+      setTimeout(() => {
+        addChatMessage("Looking at your recent workouts, I notice you've been focusing on upper body. Would you like some leg exercises to balance your routine?");
+      }, 2000);
+    }
+
+    // Initialize the page based on workout type from URL or default
+    function initializePage() {
+      // Get workout type and coach name from URL or default to 'strength' and default coach
+      const workoutType = getQueryParam('coach') || 'strength';
+      const coachName = getQueryParam('coachName') || coachesData[workoutType].name;
+      const bodyPart = getQueryParam('focus') || Object.keys(exerciseDatabase[workoutType])[0];
+      
+      // Set coach info
+      const coach = Object.values(coachesData).find(c => c.name === coachName) || coachesData[workoutType];
+      document.getElementById('coach-name').textContent = coach.name;
+      document.getElementById('coach-avatar').src = coach.avatar;
+      
+      // Select random trainer tip
+      const randomTip = coach.tips[Math.floor(Math.random() * coach.tips.length)];
+      document.getElementById('trainer-tip').textContent = randomTip;
+      
+      // Generate recommended workout
+      const exercisePool = exerciseDatabase[workoutType][bodyPart];
+      const recommendedExercises = getRandomElements(exercisePool, 4);
+      
+      const recommendedHTML = recommendedExercises.map(createRecommendedExerciseCard).join('');
+      document.getElementById('recommended-workout-container').innerHTML = recommendedHTML;
+      
+      // Generate previous workout
+      const previousExercises = getRandomElements(exercisePool, 3);
+      const previousHTML = previousExercises.map(createPreviousExerciseItem).join('');
+      document.getElementById('previous-workout-container').innerHTML = previousHTML;
+      
+      // Update stats
+      const stats = calculateStats([...recommendedExercises, ...previousExercises]);
+      document.getElementById('total-weight').textContent = `${stats.weight} kg`;
+      document.getElementById('total-calories').textContent = stats.calories;
+      document.getElementById('duration').textContent = `${stats.duration} min`;
+      document.getElementById('progress').textContent = `${stats.progress}%`;
+      
+      // Initialize chat
+      initializeChat();
+    }
+
+    // Start the application
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+ </body>
+</html>

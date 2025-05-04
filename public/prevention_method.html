@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitAI Coach - Workout Prevention Guide</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #ef476f;
+            --warning: #ffd166;
+            --gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            padding: 2rem;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .back-icon {
+            margin-right: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .page-header p {
+            color: #6c757d;
+            max-width: 600px;
+        }
+        
+        .notification-badge {
+            background-color: var(--danger);
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .notification-badge span {
+            margin-left: 0.5rem;
+        }
+        
+        .prevention-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .prevention-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .prevention-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dos .card-header {
+            background: linear-gradient(135deg, #06d6a0, #1b9aaa);
+        }
+        
+        .donts .card-header {
+            background: linear-gradient(135deg, #ef476f, #e63946);
+        }
+        
+        .card-header-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .prevention-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .prevention-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .prevention-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .dos .prevention-icon {
+            background-color: rgba(6, 214, 160, 0.1);
+            color: #06d6a0;
+        }
+        
+        .donts .prevention-icon {
+            background-color: rgba(239, 71, 111, 0.1);
+            color: #ef476f;
+        }
+        
+        .prevention-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .prevention-content p {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notification-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .notification-panel h2 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-panel h2 span {
+            margin-right: 0.5rem;
+        }
+        
+        .notification-settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .notification-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        .notification-label {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-label span {
+            margin-right: 0.5rem;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .reminder-card {
+            background: linear-gradient(135deg, #ff9e00, #ff5108);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .reminder-icon {
+            font-size: 2.5rem;
+            margin-right: 1.5rem;
+        }
+        
+        .reminder-content h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .prevention-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .notification-settings {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .notification-badge {
+                margin-top: 1rem;
+            }
+            
+            .prevention-item {
+                flex-direction: column;
+            }
+            
+            .prevention-icon {
+                margin-bottom: 1rem;
+            }
+            
+            .reminder-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .reminder-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Back Button -->
+        <a href="dashboard.html" class="back-button">
+            <span class="back-icon">←</span> Back to Dashboard
+        </a>
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Workout Prevention Guide</h1>
+                <p>Stay safe and maximize your results with these essential workout dos and don'ts. Your AI coach has personalized these recommendations based on your fitness level and goals.</p>
+            </div>
+            <div class="notification-badge">
+                🔔 <span>Notifications Active</span>
+            </div>
+        </div>
+        
+        <!-- Notification Settings Panel -->
+        <div class="notification-panel">
+            <h2><span>🔔</span> Notification Preferences</h2>
+            <div class="notification-settings">
+                <div class="notification-option">
+                    <div class="notification-label">
+                        <span>📱</span> Push Notifications
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="notification-option">
+                    <div class="notification-label">
+                        <span>📧</span> Email Alerts
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="notification-option">
+                    <div class="notification-label">
+                        <span>⏰</span> Daily Reminders
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="notification-option">
+                    <div class="notification-label">
+                        <span>🚨</span> Form Alerts
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prevention Do's and Don'ts -->
+        <div class="prevention-container">
+            <!-- Do's -->
+            <div class="prevention-card dos">
+                <div class="card-header">
+                    <div class="card-header-icon">✓</div>
+                    <h2>Workout Do's</h2>
+                </div>
+                <div class="card-content">
+                    <div class="prevention-item">
+                        <div class="prevention-icon">🔄</div>
+                        <div class="prevention-content">
+                            <h3>Warm Up Properly</h3>
+                            <p>Always spend 5-10 minutes warming up before intense exercise. This increases blood flow to muscles and reduces injury risk.</p>
+                            <small>✓ You'll receive a notification before each workout</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">💧</div>
+                        <div class="prevention-content">
+                            <h3>Stay Hydrated</h3>
+                            <p>Drink water before, during, and after workouts. Aim for at least 500ml before and 250ml for every 20 minutes of exercise.</p>
+                            <small>✓ Hydration reminders will appear during workouts</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">📏</div>
+                        <div class="prevention-content">
+                            <h3>Maintain Proper Form</h3>
+                            <p>Focus on correct technique over heavier weights or more reps. Your AI coach will monitor your form during exercises.</p>
+                            <small>✓ Real-time form corrections will be provided</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">😴</div>
+                        <div class="prevention-content">
+                            <h3>Prioritize Recovery</h3>
+                            <p>Allow 48 hours before training the same muscle group again. Ensure 7-8 hours of quality sleep each night.</p>
+                            <small>✓ Recovery reminders based on your workout schedule</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">🍎</div>
+                        <div class="prevention-content">
+                            <h3>Fuel Your Body</h3>
+                            <p>Consume protein and carbs within 30-60 minutes post-workout. Pre-workout nutrition should be 1-2 hours before training.</p>
+                            <small>✓ Personalized nutrition reminders will be sent</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Don'ts -->
+            <div class="prevention-card donts">
+                <div class="card-header">
+                    <div class="card-header-icon">✗</div>
+                    <h2>Workout Don'ts</h2>
+                </div>
+                <div class="card-content">
+                    <div class="prevention-item">
+                        <div class="prevention-icon">⚠️</div>
+                        <div class="prevention-content">
+                            <h3>Skip Warm-Up/Cool-Down</h3>
+                            <p>Never rush into intense exercise without proper preparation. Cold muscles are more prone to strains and tears.</p>
+                            <small>✓ You'll be notified if a warm-up is missed</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">🏋️</div>
+                        <div class="prevention-content">
+                            <h3>Overload Weight Too Quickly</h3>
+                            <p>Don't increase weights by more than 5-10% per week. Gradual progression reduces injury risk while building strength.</p>
+                            <small>✓ Safety alerts for excessive weight increases</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">⌚</div>
+                        <div class="prevention-content">
+                            <h3>Exercise Through Sharp Pain</h3>
+                            <p>Stop immediately if you feel sharp, sudden pain during exercise. Muscular fatigue is normal; acute pain is not.</p>
+                            <small>✓ Pain monitoring reminders during workouts</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">🚫</div>
+                        <div class="prevention-content">
+                            <h3>Compare Your Journey to Others</h3>
+                            <p>Focus on your personal progress rather than comparing yourself to others. Everyone's fitness journey is unique.</p>
+                            <small>✓ Regular personalized progress updates</small>
+                        </div>
+                    </div>
+                    
+                    <div class="prevention-item">
+                        <div class="prevention-icon">📅</div>
+                        <div class="prevention-content">
+                            <h3>Train the Same Muscles Consecutively</h3>
+                            <p>Never work the same muscle groups on consecutive days. Muscles grow during rest, not during exercise.</p>
+                            <small>✓ Workout schedule warnings will be provided</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reminder Banner -->
+        <div class="reminder-card">
+            <div class="reminder-icon">⏰</div>
+            <div class="reminder-content">
+                <h3>Your Prevention Notifications Are Active</h3>
+                <p>You'll receive timely alerts and reminders to help you stay on track with these guidelines. Your AI coach is monitoring your progress and will provide personalized prevention tips.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

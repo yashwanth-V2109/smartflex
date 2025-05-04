@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workout Routine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      
+      .card-hover:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .pulse-button {
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+        }
+      }
+      
+      .gradient-text {
+        background: linear-gradient(45deg, #f97316, #db2777);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: bold;
+      }
+      
+      .image-container {
+        overflow: hidden;
+        border-radius: 8px;
+      }
+      
+      .image-container img {
+        transition: transform 0.5s ease;
+      }
+      
+      .image-container:hover img {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="flex flex-col items-center min-h-screen">
+      <!-- Header -->
+      <div
+        class="w-full bg-gradient-to-r from-orange-400 via-orange-500 to-pink-500 h-20 flex items-center justify-between px-6 shadow-lg rounded-b-2xl"
+      >
+        <div class="flex items-center">
+          <img
+            src="https://storage.googleapis.com/a1aa/image/mz_1m2E3X9sKYEErO5EpYXiVQ2gA-byjO19mjr_IfM0.jpg"
+            alt="Gym logo"
+            class="h-12 w-12 rounded-full border-2 border-white shadow-lg"
+          />
+          <span class="ml-3 text-white font-bold text-xl">FitPro</span>
+        </div>
+        <button class="text-white text-2xl hover:text-gray-200 transition-all">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+
+      <!-- Workout Routine Header -->
+      <div class="w-full flex justify-center py-6">
+        <div
+          class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center py-3 px-8 rounded-full shadow-lg text-xl font-bold transform hover:scale-105 transition-transform"
+        >
+          <i class="fas fa-dumbbell mr-2"></i> WORKOUT ROUTINE
+        </div>
+      </div>
+
+      <!-- Workout Selection -->
+      <div
+        class="bg-white rounded-2xl p-8 w-11/12 md:w-3/4 lg:w-1/2 shadow-xl border border-gray-100 mb-10"
+      >
+        <div class="flex items-center mb-8">
+          <div class="relative">
+            <img
+              src="https://storage.googleapis.com/a1aa/image/HVu_G-drfpyWUkq2qWJgnYDiKqtS4eP-svEbCr8y9bw.jpg"
+              alt="Trainer"
+              class="rounded-full w-20 h-20 border-4 border-orange-400 shadow-md object-cover"
+            />
+            <div class="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 border-2 border-white">
+              <i class="fas fa-check text-white"></i>
+            </div>
+          </div>
+          <div
+            class="ml-4 bg-gradient-to-r from-gray-100 to-gray-200 px-6 py-4 rounded-2xl shadow-sm text-lg font-semibold text-gray-700"
+          >
+            Select the muscle group you want to train
+          </div>
+        </div>
+
+        <!-- Muscle Groups -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-8">
+          <!-- Chest -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/YxduCrv8FWLpWSwmvWxheXVse_joIu0Y6sumWp7kNoA.jpg"
+                alt="Chest"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">CHEST</span>
+          </div>
+
+          <!-- Bicep -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/NA28t1Gy3uUMVuOj1yycthtDo6ZdDHEZ0aLFKUDKvFk.jpg"
+                alt="Bicep"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">BICEP</span>
+          </div>
+
+          <!-- Back -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/SFE9OX4lFRr12CCLfc8Ir9ZrmUFGP_W4d60ww-ie3x4.jpg"
+                alt="Back"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">BACK</span>
+          </div>
+
+          <!-- Tricep -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/_XOlZy8-ignlPXraFjMtU3MXCy5e61ahlDNzVPOrzHo.jpg"
+                alt="Tricep"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">TRICEP</span>
+          </div>
+
+          <!-- Shoulder -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/9QxOZMagvK-EnSrQhg2moXj4sXf2yyo8y8ubJSh1q-4.jpg"
+                alt="Shoulder"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">SHOULDER</span>
+          </div>
+
+          <!-- Quads -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/Si1Sk3UpmwKY3_I8RoJifvm0_Fj4XY0ElamoGy2EXoc.jpg"
+                alt="Quads"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">QUADS</span>
+          </div>
+
+          <!-- Abs -->
+          <div
+            class="flex flex-col items-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer"
+          >
+            <div class="image-container mb-3">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/HxKHR9PvlP0yczX3yGKMEdo4mjAxq1RxkWSy7StICDA.jpg"
+                alt="Abs"
+                class="rounded-lg shadow-md h-24 w-24 object-cover"
+              />
+            </div>
+            <span class="gradient-text text-lg tracking-wide">ABS</span>
+          </div>
+          
+          <!-- Add Exercise Button -->
+          <div
+            class="flex flex-col items-center justify-center bg-orange-50 rounded-xl p-4 card-hover cursor-pointer border-2 border-dashed border-orange-300 h-full"
+          >
+            <div class="bg-orange-100 p-3 rounded-full">
+              <i class="fas fa-plus text-orange-500 text-2xl"></i>
+            </div>
+            <span class="text-orange-500 font-semibold mt-3">ADD MORE</span>
+          </div>
+        </div>
+
+        <!-- Next Button -->
+        <div class="flex justify-end mt-8">
+          <button
+            class="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-full flex items-center shadow-lg text-lg font-bold hover:from-orange-600 hover:to-pink-600 transition-all pulse-button"
+          >
+            START WORKOUT <i class="fas fa-arrow-right ml-3"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        class="w-full bg-gradient-to-r from-orange-400 via-orange-500 to-pink-500 py-4 rounded-t-2xl shadow-lg mt-auto"
+      >
+        <div class="flex justify-between items-center px-6">
+          <div class="flex items-center">
+            <span class="text-lg font-semibold text-white">Need Any Help?</span>
+            <button class="ml-3 bg-white text-orange-500 p-2 rounded-full shadow-md hover:bg-orange-100 transition-colors">
+              <i class="fas fa-headset"></i>
+            </button>
+          </div>
+          <div class="flex space-x-4">
+            <button class="text-white text-xl hover:text-orange-100 transition-all">
+              <i class="fas fa-home"></i>
+            </button>
+            <button class="text-white text-xl hover:text-orange-100 transition-all">
+              <i class="fas fa-calendar-alt"></i>
+            </button>
+            <button class="text-white text-xl hover:text-orange-100 transition-all">
+              <i class="fas fa-user"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
