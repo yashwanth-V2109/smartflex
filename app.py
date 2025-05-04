@@ -33,6 +33,10 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from flask_cors import CORS
+import torch
+import base64
+from io import BytesIO
+from PIL import Image
 
 # Initialize Flask application
 app = Flask(__name__, static_folder='public', template_folder='public')
@@ -476,6 +480,102 @@ def predict_bone_density():
         print(f"Error in bone density prediction: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+# Food nutrition database (simplified for demo)
+FOOD_NUTRITION = {
+    'apple': {'calories': 95, 'protein': 0.5, 'carbs': 25, 'fat': 0.3},
+    'banana': {'calories': 105, 'protein': 1.3, 'carbs': 27, 'fat': 0.4},
+    'orange': {'calories': 62, 'protein': 1.2, 'carbs': 15, 'fat': 0.2},
+    'sandwich': {'calories': 350, 'protein': 15, 'carbs': 45, 'fat': 12},
+    'pizza': {'calories': 285, 'protein': 12, 'carbs': 36, 'fat': 10},
+    'salad': {'calories': 150, 'protein': 5, 'carbs': 20, 'fat': 8},
+    'hamburger': {'calories': 354, 'protein': 25, 'carbs': 30, 'fat': 20},
+    'fries': {'calories': 365, 'protein': 4, 'carbs': 48, 'fat': 17},
+    'chicken': {'calories': 335, 'protein': 31, 'carbs': 0, 'fat': 20},
+    'rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
+    'pasta': {'calories': 131, 'protein': 5, 'carbs': 25, 'fat': 1.1},
+    'bread': {'calories': 79, 'protein': 2.7, 'carbs': 15, 'fat': 1},
+    'egg': {'calories': 70, 'protein': 6, 'carbs': 0.6, 'fat': 5},
+    'milk': {'calories': 103, 'protein': 8, 'carbs': 12, 'fat': 2.4},
+    'cheese': {'calories': 113, 'protein': 7, 'carbs': 0.4, 'fat': 9},
+    'yogurt': {'calories': 100, 'protein': 5, 'carbs': 7, 'fat': 3},
+    'coffee': {'calories': 2, 'protein': 0.1, 'carbs': 0, 'fat': 0},
+    'tea': {'calories': 2, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'water': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'soda': {'calories': 150, 'protein': 0, 'carbs': 39, 'fat': 0},
+}
+
+# Load YOLOv5 model
+try:
+    print("Loading YOLOv5 model...")
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5s.pt')
+    print("YOLOv5 model loaded successfully")
+except Exception as e:
+    print(f"Error loading YOLOv5 model: {str(e)}")
+    model = None
+
+@app.route('/api/detect-food', methods=['POST'])
+def detect_food():
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image provided'}), 400
+            
+        # Get the image file
+        image_file = request.files['image']
+        
+        # Read the image
+        img = Image.open(image_file)
+        
+        # Convert to RGB if needed
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+            
+        # Perform object detection
+        if model is not None:
+            results = model(img)
+            
+            # Get detections
+            detections = []
+            for *box, conf, cls in results.xyxy[0]:
+                label = model.names[int(cls)]
+                confidence = float(conf)
+                
+                # Only process food items with confidence > 0.5
+                if confidence > 0.5 and label in FOOD_NUTRITION:
+                    detections.append({
+                        'label': label,
+                        'confidence': confidence,
+                        'nutrition': FOOD_NUTRITION[label]
+                    })
+            
+            # Draw bounding boxes on the image
+            img_np = np.array(img)
+            for detection in detections:
+                # Get the box coordinates
+                box = results.xyxy[0][detections.index(detection)][:4].cpu().numpy()
+                x1, y1, x2, y2 = map(int, box)
+                
+                # Draw rectangle
+                cv2.rectangle(img_np, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                
+                # Add label and confidence
+                label = f"{detection['label']} ({detection['confidence']:.2f})"
+                cv2.putText(img_np, label, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
+            # Convert annotated image to base64
+            _, buffer = cv2.imencode('.jpg', img_np)
+            img_base64 = base64.b64encode(buffer).decode('utf-8')
+            
+            return jsonify({
+                'image': img_base64,
+                'detections': detections
+            })
+        else:
+            return jsonify({'error': 'Model not loaded'}), 500
+            
+    except Exception as e:
+        print(f"Error in food detection: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     # Print instructions
     print("Starting Workout Tracker Application")
@@ -483,6 +583,7 @@ if __name__ == '__main__':
     print("  - POST /api/workout/start - Start a workout")
     print("  - GET /api/workout/data - Get current workout data")
     print("  - POST /api/workout/end - End the current workout")
+    print("  - POST /api/detect-food - Analyze food image")
     
     # Start Flask app with logging disabled
     import sys

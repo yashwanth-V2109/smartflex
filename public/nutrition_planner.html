@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NutriTrack - Smart Nutrition Planning</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
       :root {
         --primary: #5ac8fa;
@@ -877,13 +885,29 @@
         border: 1px solid var(--border-color);
         border-radius: 8px;
       }
+
+      .preview-image {
+        max-width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+        margin: 1rem 0;
+      }
+      .detection-box {
+        position: absolute;
+        border: 2px solid #48bb78;
+        background-color: rgba(72, 187, 120, 0.1);
+      }
+      .detection-label {
+        position: absolute;
+        background-color: #48bb78;
+        color: white;
+        padding: 2px 6px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
     </style>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
   </head>
-  <body>
+  <body class="bg-gray-100 min-h-screen">
     <header>
       <div class="container">
         <nav>
@@ -1004,66 +1028,65 @@
           <div class="card">
             <h2><i class="fas fa-camera"></i> Food Image Analysis</h2>
 
-            <div class="upload-area" id="upload-area">
-              <div class="icon-container">
-                <i class="fas fa-camera"></i>
-              </div>
-              <h3>Take a Food Photo</h3>
-              <p>Capture your meal to analyze its nutritional content</p>
-              <div class="button-group">
-                <button class="btn btn-primary" onclick="startCamera()">
-                  <i class="fas fa-camera"></i> Open Camera
-                </button>
-                <input type="file" id="file-input" accept="image/*" style="display: none" onchange="handleFileSelect(event)">
-                <button class="btn btn-outline" onclick="document.getElementById('file-input').click()">
-                  <i class="fas fa-upload"></i> Upload Image
-                </button>
-              </div>
-              <div id="camera-container" style="display: none; margin-top: 20px;">
-                <video id="camera-feed" autoplay playsinline style="width: 100%; max-width: 500px; border-radius: 12px;"></video>
-                <div style="margin-top: 15px; text-align: center;">
-                  <button class="btn btn-primary" onclick="captureImage()">
-                    <i class="fas fa-camera"></i> Capture
-                  </button>
-                  <button class="btn btn-outline" style="margin-left: 10px" onclick="stopCamera()">
-                    <i class="fas fa-times"></i> Cancel
-                  </button>
+            <div class="container mx-auto px-4 py-8">
+              <div class="max-w-4xl mx-auto">
+                <!-- Upload Area -->
+                <div id="uploadArea" class="bg-white rounded-xl shadow-md p-8 mb-8">
+                  <div class="icon-container flex justify-center mb-4">
+                    <i class="fas fa-camera text-6xl text-indigo-500"></i>
+                  </div>
+                  <h3 class="text-2xl font-bold text-center mb-2">Food Image Analysis</h3>
+                  <p class="text-gray-600 text-center mb-6">Upload an image of your food or use the test image</p>
+                  
+                  <div class="button-group flex justify-center space-x-4">
+                    <label class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded-lg cursor-pointer">
+                      <i class="fas fa-upload mr-2"></i> Upload Image
+                      <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
+                    </label>
+                    <button onclick="loadTestImage()" class="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg">
+                      <i class="fas fa-vial mr-2"></i> Test Image
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div id="image-preview" style="display: none; margin-top: 20px;">
-                <img id="preview-img" style="max-width: 100%; border-radius: 12px;">
-                <div style="margin-top: 15px; text-align: center;">
-                  <button class="btn btn-primary" onclick="analyzeImage()">
-                    <i class="fas fa-search"></i> Analyze Food
-                  </button>
-                  <button class="btn btn-outline" style="margin-left: 10px" onclick="resetImage()">
-                    <i class="fas fa-redo"></i> Reset
-                  </button>
-                </div>
-              </div>
-            </div>
 
-            <div id="food-analysis-results" style="display: none; margin-top: 20px;">
-              <h3>Analysis Results</h3>
-              <div class="food-items-container"></div>
-              <div class="nutrition-summary">
-                <h4>Total Nutrition</h4>
-                <div class="nutrition-grid">
-                  <div class="nutrition-item">
-                    <span>Calories:</span>
-                    <span id="analysis-total-calories">0</span>
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
+                  <div class="flex flex-col items-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-500 mb-4"></div>
+                    <p class="text-gray-600">Analyzing your food image...</p>
                   </div>
-                  <div class="nutrition-item">
-                    <span>Protein:</span>
-                    <span id="analysis-total-protein">0g</span>
+                </div>
+
+                <!-- Preview Container -->
+                <div id="previewContainer" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
+                  <div class="flex justify-center mb-4">
+                    <img id="previewImage" class="max-w-full h-auto rounded-lg" alt="Food preview">
                   </div>
-                  <div class="nutrition-item">
-                    <span>Carbs:</span>
-                    <span id="analysis-total-carbs">0g</span>
+                  <div class="flex justify-center space-x-4">
+                    <button onclick="resetImage()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg">
+                      <i class="fas fa-redo mr-2"></i> Try Again
+                    </button>
                   </div>
-                  <div class="nutrition-item">
-                    <span>Fat:</span>
-                    <span id="analysis-total-fat">0g</span>
+                </div>
+
+                <!-- Results Container -->
+                <div id="resultsContainer" class="hidden bg-white rounded-xl shadow-md p-8">
+                  <h3 class="text-2xl font-bold mb-4">Analysis Results</h3>
+                  <div id="detectionResults" class="space-y-4"></div>
+                </div>
+
+                <!-- Camera Feed (hidden by default) -->
+                <div id="cameraContainer" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
+                  <div class="flex justify-center mb-4">
+                    <video id="camera-feed" class="max-w-full h-auto rounded-lg" autoplay playsinline></video>
+                  </div>
+                  <div class="flex justify-center space-x-4">
+                    <button onclick="captureImage()" class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded-lg">
+                      <i class="fas fa-camera mr-2"></i> Capture
+                    </button>
+                    <button onclick="stopCamera()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg">
+                      <i class="fas fa-times mr-2"></i> Cancel
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1705,41 +1728,93 @@
         }
       }
       
-      // Update food analysis results in the UI
-      function updateFoodAnalysisResults(analysis) {
-        const resultsContainer = document.getElementById('food-analysis-results');
-        if (!resultsContainer) return;
+      // Analyze image
+      async function analyzeImage() {
+        const previewImg = document.getElementById('previewImage');
+        const imageData = previewImg.src;
         
-        // Generate HTML for food items
-        const foodItemsHTML = analysis.foodItems.map(item => `
-          <div class="food-item-result">
-            <div class="food-item-header">
-              <h4>${item.name}</h4>
-              <span class="food-confidence">${Math.round(item.confidence * 100)}% confidence</span>
-            </div>
-            <div class="food-item-details">
-              <div class="food-nutrition">
-                <span>Calories: ${item.calories || 0}</span>
-                <span>Protein: ${item.protein || 0}g</span>
-                <span>Carbs: ${item.carbs || 0}g</span>
-                <span>Fat: ${item.fat || 0}g</span>
+        try {
+          // Convert base64 to blob
+          const response = await fetch(imageData);
+          const blob = await response.blob();
+          
+          // Create form data
+          const formData = new FormData();
+          formData.append('image', blob, 'food.jpg');
+          
+          // Show loading indicator
+          document.getElementById('loadingIndicator').style.display = 'block';
+          document.getElementById('resultsContainer').style.display = 'none';
+          
+          // Send the image to the Flask server
+          const analysisResponse = await fetch('http://localhost:5000/api/detect-food', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!analysisResponse.ok) {
+            throw new Error('Failed to analyze image');
+          }
+          
+          const result = await analysisResponse.json();
+          
+          // Hide loading indicator
+          document.getElementById('loadingIndicator').style.display = 'none';
+          
+          // Update the preview image with the annotated version
+          if (result.image) {
+            previewImg.src = `data:image/jpeg;base64,${result.image}`;
+          }
+          
+          // Update the analysis results
+          updateFoodAnalysisResults(result.detections);
+          
+          // Show results container
+          document.getElementById('resultsContainer').style.display = 'block';
+          
+        } catch (error) {
+          console.error('Error analyzing food:', error);
+          document.getElementById('loadingIndicator').style.display = 'none';
+          showNotification(error.message || 'Failed to analyze food image', 'error');
+        }
+      }
+      
+      // Update food analysis results
+      function updateFoodAnalysisResults(detections) {
+        const resultsContainer = document.getElementById('detectionResults');
+        resultsContainer.innerHTML = '';
+        
+        if (!detections || detections.length === 0) {
+          resultsContainer.innerHTML = '<p class="text-center text-gray-500">No food items detected</p>';
+          return;
+        }
+        
+        detections.forEach(detection => {
+          const foodCard = document.createElement('div');
+          foodCard.className = 'bg-white rounded-lg shadow-md p-4 mb-4';
+          
+          const nutrition = detection.nutrition;
+          foodCard.innerHTML = `
+            <h3 class="text-lg font-semibold mb-2">${detection.label}</h3>
+            <p class="text-sm text-gray-600 mb-2">Confidence: ${(detection.confidence * 100).toFixed(1)}%</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="text-sm">
+                <span class="font-medium">Calories:</span> ${nutrition.calories}
+              </div>
+              <div class="text-sm">
+                <span class="font-medium">Protein:</span> ${nutrition.protein}g
+              </div>
+              <div class="text-sm">
+                <span class="font-medium">Carbs:</span> ${nutrition.carbs}g
+              </div>
+              <div class="text-sm">
+                <span class="font-medium">Fat:</span> ${nutrition.fat}g
               </div>
             </div>
-          </div>
-        `).join('');
-        
-        // Update results container
-        resultsContainer.innerHTML = foodItemsHTML || '<p>No food items detected</p>';
-        
-        // Show the results container
-        resultsContainer.style.display = 'block';
-        
-        // Update total nutrition
-        const nutrition = analysis.nutrition;
-        document.getElementById('analysis-total-calories').textContent = nutrition.calories;
-        document.getElementById('analysis-total-protein').textContent = `${nutrition.protein}g`;
-        document.getElementById('analysis-total-carbs').textContent = `${nutrition.carbs}g`;
-        document.getElementById('analysis-total-fat').textContent = `${nutrition.fat}g`;
+          `;
+          
+          resultsContainer.appendChild(foodCard);
+        });
       }
       
       // Start camera
@@ -1758,7 +1833,7 @@
           
           // Show camera container and hide other elements
           document.getElementById('camera-container').style.display = 'block';
-          document.getElementById('image-preview').style.display = 'none';
+          document.getElementById('previewContainer').style.display = 'none';
           document.querySelector('.icon-container').style.display = 'none';
           document.querySelector('h3').style.display = 'none';
           document.querySelector('p').style.display = 'none';
@@ -1786,6 +1861,37 @@
         document.querySelector('.button-group').style.display = 'block';
       }
       
+      // Handle file selection
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            showImagePreview(e.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      
+      // Show image preview
+      function showImagePreview(imageData) {
+        const previewImg = document.getElementById('previewImage');
+        const imagePreview = document.getElementById('previewContainer');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        previewImg.src = imageData;
+        imagePreview.style.display = 'block';
+        
+        // Hide the icon and text
+        uploadArea.querySelector('.icon-container').style.display = 'none';
+        uploadArea.querySelector('h3').style.display = 'none';
+        uploadArea.querySelector('p').style.display = 'none';
+        uploadArea.querySelector('.button-group').style.display = 'none';
+        
+        // Automatically analyze the image
+        analyzeImage();
+      }
+      
       // Capture image from camera
       function captureImage() {
         const video = document.getElementById('camera-feed');
@@ -1807,84 +1913,6 @@
         
         // Show the image preview
         showImagePreview(imageData);
-      }
-      
-      // Handle file selection
-      function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            showImagePreview(e.target.result);
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-      
-      // Show image preview
-      function showImagePreview(imageData) {
-        const previewImg = document.getElementById('preview-img');
-        const imagePreview = document.getElementById('image-preview');
-        const uploadArea = document.getElementById('upload-area');
-        
-        previewImg.src = imageData;
-        imagePreview.style.display = 'block';
-        
-        // Hide the icon and text
-        uploadArea.querySelector('.icon-container').style.display = 'none';
-        uploadArea.querySelector('h3').style.display = 'none';
-        uploadArea.querySelector('p').style.display = 'none';
-        uploadArea.querySelector('.button-group').style.display = 'none';
-      }
-      
-      // Reset image preview
-      function resetImage() {
-        const imagePreview = document.getElementById('image-preview');
-        const uploadArea = document.getElementById('upload-area');
-        
-        imagePreview.style.display = 'none';
-        
-        // Show the icon and text
-        uploadArea.querySelector('.icon-container').style.display = 'flex';
-        uploadArea.querySelector('h3').style.display = 'block';
-        uploadArea.querySelector('p').style.display = 'block';
-        uploadArea.querySelector('.button-group').style.display = 'block';
-      }
-      
-      // Analyze image
-      async function analyzeImage() {
-        const previewImg = document.getElementById('preview-img');
-        const imageData = previewImg.src;
-        
-        try {
-          // First check if the Flask server is running
-          const testResponse = await fetch('http://localhost:5000/test');
-          if (!testResponse.ok) {
-            throw new Error('Flask server is not running');
-          }
-          
-          // Send the image data to the Flask server
-          const analysisResponse = await fetch('http://localhost:5000/analyze', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              imageData: imageData
-            })
-          });
-          
-          if (!analysisResponse.ok) {
-            throw new Error('Failed to analyze image');
-          }
-          
-          const analysis = await analysisResponse.json();
-          updateFoodAnalysisResults(analysis);
-          
-        } catch (error) {
-          console.error('Error analyzing food:', error);
-          showNotification(error.message || 'Failed to analyze food image', 'error');
-        }
       }
       
       // Helper functions
@@ -1917,6 +1945,57 @@
       // Navigation functions
       function navigateTo(page) {
         window.location.href = `/${page}.html`;
+      }
+
+      // Load test image
+      async function loadTestImage() {
+        try {
+          // Show loading indicator
+          document.getElementById('loadingIndicator').style.display = 'block';
+          document.getElementById('resultsContainer').style.display = 'none';
+          
+          // Create a simple test image with food items
+          const canvas = document.createElement('canvas');
+          canvas.width = 800;
+          canvas.height = 500;
+          const ctx = canvas.getContext('2d');
+          
+          // White background
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Draw an apple
+          ctx.fillStyle = 'red';
+          ctx.beginPath();
+          ctx.arc(200, 200, 30, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Draw a banana
+          ctx.fillStyle = 'yellow';
+          ctx.beginPath();
+          ctx.ellipse(400, 200, 60, 30, Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Draw a sandwich
+          ctx.fillStyle = 'brown';
+          ctx.fillRect(150, 350, 100, 50);
+          ctx.fillStyle = 'yellow';
+          ctx.fillRect(150, 400, 100, 50);
+          
+          // Convert to base64
+          const imageData = canvas.toDataURL('image/jpeg');
+          
+          // Show the image
+          showImagePreview(imageData);
+          
+          // Hide loading indicator
+          document.getElementById('loadingIndicator').style.display = 'none';
+          
+        } catch (error) {
+          console.error('Error loading test image:', error);
+          document.getElementById('loadingIndicator').style.display = 'none';
+          showNotification('Failed to load test image', 'error');
+        }
       }
     </script>
   </body>
