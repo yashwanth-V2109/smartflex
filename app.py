@@ -1177,13 +1177,30 @@ def detect_food():
                 label = model.names[int(cls)]
                 confidence = float(conf)
                 
-                # Only process food items with confidence > 0.5
-                if confidence > 0.5 and label in FOOD_NUTRITION:
-                    detections.append({
-                        'label': label,
-                        'confidence': confidence,
-                        'nutrition': FOOD_NUTRITION[label]
-                    })
+                # Lower the confidence threshold to detect more items
+                if confidence > 0.3:
+                    # Try to match the label with our food database
+                    matched_label = None
+                    
+                    # Check for rice-related items
+                    if 'rice' in label.lower():
+                        matched_label = 'rice'
+                    # Check for other food items
+                    elif label in FOOD_NUTRITION:
+                        matched_label = label
+                    # Try to match with similar names
+                    else:
+                        for food_name in FOOD_NUTRITION.keys():
+                            if food_name in label.lower() or label.lower() in food_name:
+                                matched_label = food_name
+                                break
+                    
+                    if matched_label:
+                        detections.append({
+                            'label': matched_label,
+                            'confidence': confidence,
+                            'nutrition': FOOD_NUTRITION[matched_label]
+                        })
             
             # Draw bounding boxes on the image
             img_np = np.array(img)
@@ -1212,6 +1229,37 @@ def detect_food():
             
     except Exception as e:
         print(f"Error in food detection: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/get-nutrition', methods=['POST'])
+def get_nutrition():
+    try:
+        data = request.get_json()
+        food_name = data.get('foodName', '').lower()
+        quantity = float(data.get('quantity', 100))  # Default to 100g if not specified
+        
+        # Find the food in our database
+        food_data = None
+        for food_key in FOOD_NUTRITION:
+            if food_name in food_key or food_key in food_name:
+                food_data = FOOD_NUTRITION[food_key]
+                break
+        
+        if not food_data:
+            return jsonify({'error': 'Food not found in database'}), 404
+        
+        # Calculate nutrition based on quantity (assuming values are per 100g)
+        scale_factor = quantity / 100.0
+        nutrition_info = {
+            'calories': round(food_data['calories'] * scale_factor, 1),
+            'protein': round(food_data['protein'] * scale_factor, 1),
+            'carbs': round(food_data['carbs'] * scale_factor, 1),
+            'fat': round(food_data['fat'] * scale_factor, 1)
+        }
+        
+        return jsonify(nutrition_info)
+        
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
