@@ -89,27 +89,6 @@
                 <p class="text-xs text-gray-200">Premium Member</p>
               </div>
             </div>
-            <div class="bg-white/10 rounded-lg p-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <p class="text-xs text-gray-200">Weight</p>
-                  <p class="font-bold" id="user-weight">Loading...</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-200">Height</p>
-                  <p class="font-bold" id="user-height">Loading...</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-200">Age</p>
-                  <p class="font-bold" id="user-age">Loading...</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-200">BMI</p>
-                  <p class="font-bold" id="user-bmi">Loading...</p>
-                  <p id="bmi-category" class="text-sm font-medium text-gray-200">Calculating...</p>
-                </div>
-              </div>
-            </div>
           </div>
 
           <nav>
@@ -208,7 +187,26 @@
           <!-- Workout Stats -->
           <div class="bg-white rounded-xl shadow-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Workout Stats</h3>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p class="text-sm text-gray-500">Weight</p>
+                <p class="text-2xl font-bold text-gray-800" id="user-weight">170 kg</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Height</p>
+                <p class="text-2xl font-bold text-gray-800" id="user-height">180 cm</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Age</p>
+                <p class="text-2xl font-bold text-gray-800" id="user-age">21</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">BMI</p>
+                <p class="text-2xl font-bold text-gray-800" id="user-bmi">52.5</p>
+                <p id="bmi-category" class="text-sm font-medium text-red-500">Obese</p>
+              </div>
+            </div>
+            <!-- <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t">
               <div>
                 <p class="text-sm text-gray-500">Total Workouts</p>
                 <p class="text-2xl font-bold text-gray-800" id="total-workouts">0</p>
@@ -221,28 +219,65 @@
                 <p class="text-sm text-gray-500">Calories Burned</p>
                 <p class="text-2xl font-bold text-gray-800" id="calories-burned">0</p>
               </div>
-            </div>
+            </div> -->
           </div>
 
           <!-- Nutrition Stats -->
           <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Today's Nutrition</h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <p class="text-sm text-gray-500">Calories</p>
-                <p class="text-2xl font-bold text-gray-800" id="calories-consumed">0</p>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Today's Nutrition Plan</h3>
+            <div class="mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-500">Daily Calorie Goal</span>
+                <span class="text-sm font-medium text-blue-600">2,200 calories</span>
               </div>
-              <div>
-                <p class="text-sm text-gray-500">Protein</p>
-                <p class="text-2xl font-bold text-gray-800" id="protein-consumed">0g</p>
+              <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 65%"></div>
               </div>
-              <div>
-                <p class="text-sm text-gray-500">Carbs</p>
-                <p class="text-2xl font-bold text-gray-800" id="carbs-consumed">0g</p>
+            </div>
+
+            <div class="space-y-3">
+              <!-- Key Meals -->
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-medium text-gray-800">Breakfast (7:00 AM)</h4>
+                  <span class="text-sm text-gray-500">450 cal</span>
+                </div>
+                <p class="text-sm text-gray-600">Greek yogurt, berries, honey, whole grain toast</p>
               </div>
-              <div>
-                <p class="text-sm text-gray-500">Fat</p>
-                <p class="text-2xl font-bold text-gray-800" id="fat-consumed">0g</p>
+
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-medium text-gray-800">Lunch (1:00 PM)</h4>
+                  <span class="text-sm text-gray-500">650 cal</span>
+                </div>
+                <p class="text-sm text-gray-600">Grilled chicken, brown rice, vegetables</p>
+              </div>
+
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-medium text-gray-800">Dinner (7:00 PM)</h4>
+                  <span class="text-sm text-gray-500">650 cal</span>
+                </div>
+                <p class="text-sm text-gray-600">Baked salmon, quinoa, steamed vegetables</p>
+              </div>
+            </div>
+
+            <!-- Quick Nutrition Tips -->
+            <div class="mt-4 pt-4 border-t">
+              <h4 class="font-medium text-gray-800 mb-3">Quick Tips</h4>
+              <div class="space-y-2">
+                <div class="flex items-center text-sm text-gray-600">
+                  <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                  <span>Stay hydrated - aim for 3L water daily</span>
+                </div>
+                <div class="flex items-center text-sm text-gray-600">
+                  <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                  <span>Eat protein-rich snacks between meals</span>
+                </div>
+                <div class="flex items-center text-sm text-gray-600">
+                  <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                  <span>Limit processed foods and sugary drinks</span>
+                </div>
               </div>
             </div>
           </div>
@@ -318,48 +353,47 @@
         <!-- Main Content Area -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Progress Chart -->
-          <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
+          <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-300">
             <div class="flex justify-between items-center mb-6">
-              <h3 class="text-xl font-bold text-gray-800">Chest Progress</h3>
-              <div class="flex space-x-2">
-                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded-lg text-sm transition">
-                  Weekly
-                </button>
-                <button class="gradient-bg text-white py-1 px-3 rounded-lg text-sm transition shadow">
-                  Monthly
-                </button>
-                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded-lg text-sm transition">
-                  Yearly
-                </button>
+              <div class="flex items-center">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg mr-3">
+                  <i class="fas fa-bullseye text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Goal Tracker</h3>
               </div>
-            </div>
-            <div>
-              <img
-                src="/api/placeholder/800/400"
-                alt="Progress chart showing chest workout data over time"
-                class="rounded-lg w-full h-64 object-cover"
-              />
-            </div>
-            <div class="mt-4 grid grid-cols-3 gap-4">
-              <div class="text-center">
-                <p class="text-gray-500 text-sm">Average</p>
-                <p class="font-bold text-lg">75 kg</p>
-              </div>
-              <div class="text-center">
-                <p class="text-gray-500 text-sm">Max</p>
-                <p class="font-bold text-lg">95 kg</p>
-              </div>
-              <div class="text-center">
-                <p class="text-gray-500 text-sm">Progress</p>
-                <p class="font-bold text-lg text-green-500">+15%</p>
-              </div>
-            </div>
-            <div class="mt-4 flex justify-center">
-              <button
-                class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-5 rounded-lg font-semibold transition-all"
-              >
-                <i class="fas fa-table mr-2"></i> Edit Data Table
+              <button onclick="showGoalModal()" class="gradient-bg text-white py-2 px-4 rounded-lg text-sm transition-all duration-300 shadow hover:shadow-lg hover:scale-105">
+                <i class="fas fa-plus mr-1"></i> Set New Goal
               </button>
+            </div>
+
+            <!-- Active Goals -->
+            <div id="activeGoals" class="space-y-4">
+              <!-- Goals will be dynamically added here -->
+            </div>
+
+            <!-- Goal Summary -->
+            <div class="mt-6 grid grid-cols-3 gap-4 pt-4 border-t">
+              <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl hover:shadow-md transition-all duration-300">
+                <div class="bg-blue-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-chart-line text-white"></i>
+                </div>
+                <p class="text-gray-500 text-sm">Overall Progress</p>
+                <p class="font-bold text-lg text-blue-600" id="overallProgress">0%</p>
+              </div>
+              <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl hover:shadow-md transition-all duration-300">
+                <div class="bg-green-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-fire text-white"></i>
+                </div>
+                <p class="text-gray-500 text-sm">Best Streak</p>
+                <p class="font-bold text-lg text-green-600" id="bestStreak">0 days</p>
+              </div>
+              <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl hover:shadow-md transition-all duration-300">
+                <div class="bg-purple-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-trophy text-white"></i>
+                </div>
+                <p class="text-gray-500 text-sm">Goals Completed</p>
+                <p class="font-bold text-lg text-purple-600" id="goalsCompleted">0/0</p>
+              </div>
             </div>
           </div>
           
@@ -368,54 +402,14 @@
             <!-- Today's Workout -->
             <div class="bg-white rounded-xl shadow-md p-6">
               <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-800">Today's Workout</h3>
-                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Chest Day</span>
+                <h3 class="text-xl font-bold text-gray-800">Weekly Workout Plan</h3>
+                <button onclick="addWorkoutDay()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition">
+                  <i class="fas fa-plus mr-1"></i> Add Day
+                </button>
               </div>
-              <ul class="space-y-4">
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                    <div>
-                      <p class="font-medium">Bench Press</p>
-                      <p class="text-gray-500 text-xs">4 sets × 8-10 reps</p>
-                    </div>
-                  </div>
-                  <span class="text-sm font-medium">80 kg</span>
-                </li>
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                    <div>
-                      <p class="font-medium">Incline Press</p>
-                      <p class="text-gray-500 text-xs">3 sets × 10 reps</p>
-                    </div>
-                  </div>
-                  <span class="text-sm font-medium">65 kg</span>
-                </li>
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <div class="flex items-center">
-                    <i class="far fa-circle text-gray-400 mr-3"></i>
-                    <div>
-                      <p class="font-medium">Cable Flyes</p>
-                      <p class="text-gray-500 text-xs">3 sets × 12 reps</p>
-                    </div>
-                  </div>
-                  <span class="text-sm font-medium">25 kg</span>
-                </li>
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <div class="flex items-center">
-                    <i class="far fa-circle text-gray-400 mr-3"></i>
-                    <div>
-                      <p class="font-medium">Push-ups</p>
-                      <p class="text-gray-500 text-xs">4 sets × 15-20 reps</p>
-                    </div>
-                  </div>
-                  <span class="text-sm font-medium">Body</span>
-                </li>
-              </ul>
-              <button class="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 rounded-lg font-medium transition-all">
-                Start Workout
-              </button>
+              <div id="workoutPlan" class="space-y-4">
+                <!-- Workout days will be added here -->
+              </div>
             </div>
             
             <!-- AI Suggestions -->
@@ -452,37 +446,7 @@
         </div>
         
         <!-- Muscle Group Buttons -->
-        <div class="mt-8">
-          <h3 class="text-xl font-bold text-gray-800 mb-4">Muscle Groups</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            <button class="gradient-bg text-white p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-heartbeat text-2xl mb-2"></i>
-              <span>Chest</span>
-            </button>
-            <button class="bg-white text-gray-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-dumbbell text-2xl mb-2 text-gray-600"></i>
-              <span>Arms</span>
-            </button>
-            <button class="bg-white text-gray-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-running text-2xl mb-2 text-gray-600"></i>
-              <span>Legs</span>
-            </button>
-            <button class="bg-white text-gray-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-child text-2xl mb-2 text-gray-600"></i>
-              <span>Back</span>
-            </button>
-            <button class="bg-white text-gray-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-weight text-2xl mb-2 text-gray-600"></i>
-              <span>Shoulders</span>
-            </button>
-            <button class="bg-white text-gray-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center h-24 card-hover transition-all">
-              <i class="fas fa-plus text-2xl mb-2 text-gray-600"></i>
-              <span>Add More</span>
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
+        </main>
 
     <!-- Footer -->
     <!-- <footer
@@ -494,9 +458,52 @@
       </button>
     </footer> -->
 
+    <!-- Goal Setting Modal -->
+    <div id="goalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center backdrop-blur-sm">
+      <div class="bg-white rounded-xl p-6 w-full max-w-md transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg mr-3">
+              <i class="fas fa-bullseye text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800">Set New Goal</h3>
+          </div>
+          <button onclick="hideGoalModal()" class="text-gray-500 hover:text-gray-700 transition-colors duration-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="goalForm" class="space-y-4">
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Goal Title</label>
+            <input type="text" id="goalTitle" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="e.g., Lose 20kg" required>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Current Value</label>
+            <input type="number" id="currentValue" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="e.g., 170" required>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Target Value</label>
+            <input type="number" id="targetValue" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="e.g., 150" required>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+            <input type="text" id="goalUnit" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="e.g., kg, workouts, etc." required>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+            <input type="date" id="goalDeadline" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+          </div>
+          <button type="submit" class="w-full gradient-bg text-white py-2 rounded-lg transition-all duration-300 shadow hover:shadow-lg hover:scale-[1.02]">
+            Set Goal
+          </button>
+        </form>
+      </div>
+    </div>
+
     <script>
       // User authentication and session management
       let currentUser = null;
+      let workoutPlan = JSON.parse(localStorage.getItem('workoutPlan')) || [];
       
       // Authentication check
       function checkAuth() {
@@ -526,6 +533,9 @@
           
           // Load user's data
           loadUserData(user.id);
+          
+          // Load workout plan
+          loadWorkoutPlan();
         } catch (error) {
           console.error('Error parsing user data:', error);
           logout();
@@ -610,6 +620,271 @@
         localStorage.removeItem('userEmail');
         window.location.href = '/login.html';
       }
+
+      // Workout Plan Functions
+      function loadWorkoutPlan() {
+        const workoutPlanContainer = document.getElementById('workoutPlan');
+        workoutPlanContainer.innerHTML = '';
+        
+        if (workoutPlan.length === 0) {
+          workoutPlanContainer.innerHTML = `
+            <div class="text-center py-4 text-gray-500">
+              <p>No workout days planned yet</p>
+              <button onclick="addWorkoutDay()" class="mt-2 text-blue-500 hover:text-blue-600">
+                <i class="fas fa-plus mr-1"></i> Add your first workout day
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        workoutPlan.forEach((day, index) => {
+          const dayElement = createWorkoutDayElement(day, index);
+          workoutPlanContainer.appendChild(dayElement);
+        });
+      }
+
+      function createWorkoutDayElement(day, index) {
+        const div = document.createElement('div');
+        div.className = 'bg-gray-50 rounded-lg p-4';
+        div.innerHTML = `
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center">
+              <select onchange="updateWorkoutDay(${index}, 'day', this.value)" class="bg-white border rounded px-2 py-1 mr-2">
+                ${getDayOptions(day.day)}
+              </select>
+              <input type="text" value="${day.muscleGroup}" 
+                onchange="updateWorkoutDay(${index}, 'muscleGroup', this.value)"
+                placeholder="Muscle Group" 
+                class="bg-white border rounded px-2 py-1 w-32">
+            </div>
+            <button onclick="removeWorkoutDay(${index})" class="text-red-500 hover:text-red-600">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div class="space-y-2">
+            ${day.exercises.map((exercise, exIndex) => `
+              <div class="flex items-center gap-2">
+                <input type="text" value="${exercise.name}" 
+                  onchange="updateExercise(${index}, ${exIndex}, 'name', this.value)"
+                  placeholder="Exercise name" 
+                  class="bg-white border rounded px-2 py-1 flex-1">
+                <input type="text" value="${exercise.sets}" 
+                  onchange="updateExercise(${index}, ${exIndex}, 'sets', this.value)"
+                  placeholder="Sets" 
+                  class="bg-white border rounded px-2 py-1 w-20">
+                <input type="text" value="${exercise.reps}" 
+                  onchange="updateExercise(${index}, ${exIndex}, 'reps', this.value)"
+                  placeholder="Reps" 
+                  class="bg-white border rounded px-2 py-1 w-20">
+                <button onclick="removeExercise(${index}, ${exIndex})" class="text-red-500 hover:text-red-600">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            `).join('')}
+            <button onclick="addExercise(${index})" class="text-blue-500 hover:text-blue-600 text-sm">
+              <i class="fas fa-plus mr-1"></i> Add Exercise
+            </button>
+          </div>
+        `;
+        return div;
+      }
+
+      function getDayOptions(selectedDay) {
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        return days.map(day => 
+          `<option value="${day}" ${day === selectedDay ? 'selected' : ''}>${day}</option>`
+        ).join('');
+      }
+
+      function addWorkoutDay() {
+        workoutPlan.push({
+          day: 'Monday',
+          muscleGroup: '',
+          exercises: []
+        });
+        saveWorkoutPlan();
+        loadWorkoutPlan();
+      }
+
+      function removeWorkoutDay(index) {
+        workoutPlan.splice(index, 1);
+        saveWorkoutPlan();
+        loadWorkoutPlan();
+      }
+
+      function updateWorkoutDay(index, field, value) {
+        workoutPlan[index][field] = value;
+        saveWorkoutPlan();
+      }
+
+      function addExercise(dayIndex) {
+        workoutPlan[dayIndex].exercises.push({
+          name: '',
+          sets: '',
+          reps: ''
+        });
+        saveWorkoutPlan();
+        loadWorkoutPlan();
+      }
+
+      function removeExercise(dayIndex, exerciseIndex) {
+        workoutPlan[dayIndex].exercises.splice(exerciseIndex, 1);
+        saveWorkoutPlan();
+        loadWorkoutPlan();
+      }
+
+      function updateExercise(dayIndex, exerciseIndex, field, value) {
+        workoutPlan[dayIndex].exercises[exerciseIndex][field] = value;
+        saveWorkoutPlan();
+      }
+
+      function saveWorkoutPlan() {
+        localStorage.setItem('workoutPlan', JSON.stringify(workoutPlan));
+      }
+
+      // Goal management
+      let goals = JSON.parse(localStorage.getItem('goals')) || [];
+      
+      function showGoalModal() {
+        const modal = document.getElementById('goalModal');
+        const modalContent = document.getElementById('modalContent');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+          modalContent.classList.remove('scale-95', 'opacity-0');
+          modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+      }
+
+      function hideGoalModal() {
+        const modal = document.getElementById('goalModal');
+        const modalContent = document.getElementById('modalContent');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }, 300);
+      }
+
+      function createGoalElement(goal) {
+        const daysLeft = Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+        const progress = ((goal.currentValue / goal.targetValue) * 100).toFixed(1);
+        const remaining = goal.targetValue - goal.currentValue;
+        
+        return `
+          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02]" data-goal-id="${goal.id}">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h4 class="font-medium text-gray-800 flex items-center">
+                  <i class="fas fa-bullseye text-blue-500 mr-2"></i>
+                  ${goal.title}
+                </h4>
+                <p class="text-sm text-gray-500">Target: ${goal.targetValue} ${goal.unit} by ${new Date(goal.deadline).toLocaleDateString()}</p>
+              </div>
+              <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                ${daysLeft} days left
+              </span>
+            </div>
+            <div class="mb-2">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Current: ${goal.currentValue} ${goal.unit}</span>
+                <span class="text-gray-600">Target: ${goal.targetValue} ${goal.unit}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-green-500 font-medium">${remaining} ${goal.unit} to go</span>
+              <div class="flex space-x-2">
+                <button onclick="updateGoalProgress('${goal.id}')" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteGoal('${goal.id}')" class="text-red-500 hover:text-red-600 transition-colors duration-300">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function updateGoalsList() {
+        const goalsContainer = document.getElementById('activeGoals');
+        goalsContainer.innerHTML = goals.map(goal => createGoalElement(goal)).join('');
+        updateGoalSummary();
+      }
+
+      function updateGoalSummary() {
+        const totalGoals = goals.length;
+        const completedGoals = goals.filter(goal => goal.currentValue >= goal.targetValue).length;
+        const overallProgress = totalGoals > 0 
+          ? Math.round((completedGoals / totalGoals) * 100) 
+          : 0;
+        
+        document.getElementById('overallProgress').textContent = `${overallProgress}%`;
+        document.getElementById('goalsCompleted').textContent = `${completedGoals}/${totalGoals}`;
+        
+        // Calculate best streak (simplified version)
+        const bestStreak = Math.max(...goals.map(goal => goal.streak || 0));
+        document.getElementById('bestStreak').textContent = `${bestStreak} days`;
+      }
+
+      function addGoal(event) {
+        event.preventDefault();
+        
+        const newGoal = {
+          id: Date.now().toString(),
+          title: document.getElementById('goalTitle').value,
+          currentValue: parseFloat(document.getElementById('currentValue').value),
+          targetValue: parseFloat(document.getElementById('targetValue').value),
+          unit: document.getElementById('goalUnit').value,
+          deadline: document.getElementById('goalDeadline').value,
+          streak: 0,
+          createdAt: new Date().toISOString()
+        };
+        
+        goals.push(newGoal);
+        localStorage.setItem('goals', JSON.stringify(goals));
+        
+        updateGoalsList();
+        hideGoalModal();
+        event.target.reset();
+      }
+
+      function updateGoalProgress(goalId) {
+        const goal = goals.find(g => g.id === goalId);
+        if (!goal) return;
+        
+        const newValue = prompt(`Enter new value for ${goal.title} (current: ${goal.currentValue} ${goal.unit}):`);
+        if (newValue === null) return;
+        
+        goal.currentValue = parseFloat(newValue);
+        if (goal.currentValue >= goal.targetValue) {
+          goal.completed = true;
+        }
+        
+        localStorage.setItem('goals', JSON.stringify(goals));
+        updateGoalsList();
+      }
+
+      function deleteGoal(goalId) {
+        if (confirm('Are you sure you want to delete this goal?')) {
+          goals = goals.filter(goal => goal.id !== goalId);
+          localStorage.setItem('goals', JSON.stringify(goals));
+          updateGoalsList();
+        }
+      }
+
+      // Event Listeners
+      document.getElementById('goalForm').addEventListener('submit', addGoal);
+      
+      // Initialize
+      document.addEventListener('DOMContentLoaded', () => {
+        updateGoalsList();
+      });
     </script>
   </body>
 </html>

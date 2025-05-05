@@ -40,7 +40,13 @@ from PIL import Image
 
 # Initialize Flask application
 app = Flask(__name__, static_folder='public', template_folder='public')
-CORS(app)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Load bone density dataset
 try:
@@ -480,28 +486,660 @@ def predict_bone_density():
         print(f"Error in bone density prediction: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+# Food database with nutritional information per 100g
+FOOD_DATABASE = {
+    'apple': {'calories': 52, 'protein': 0.3, 'carbs': 13.8, 'fat': 0.2},
+    'banana': {'calories': 89, 'protein': 1.1, 'carbs': 22.8, 'fat': 0.3},
+    'orange': {'calories': 47, 'protein': 0.9, 'carbs': 11.8, 'fat': 0.1},
+    'chicken breast': {'calories': 165, 'protein': 31, 'carbs': 0, 'fat': 3.6},
+    'rice': {'calories': 130, 'protein': 2.7, 'carbs': 28.2, 'fat': 0.3},
+    'salmon': {'calories': 208, 'protein': 22, 'carbs': 0, 'fat': 13},
+    'egg': {'calories': 155, 'protein': 12.6, 'carbs': 0.6, 'fat': 11.3},
+    'bread': {'calories': 265, 'protein': 9, 'carbs': 49, 'fat': 3.2},
+    'milk': {'calories': 42, 'protein': 3.4, 'carbs': 5, 'fat': 1},
+    'yogurt': {'calories': 59, 'protein': 3.5, 'carbs': 4.7, 'fat': 3.3},
+    'beef': {'calories': 250, 'protein': 26, 'carbs': 0, 'fat': 17},
+    'pork': {'calories': 242, 'protein': 27, 'carbs': 0, 'fat': 14},
+    'turkey': {'calories': 157, 'protein': 29, 'carbs': 0, 'fat': 3.6},
+    'tuna': {'calories': 132, 'protein': 28, 'carbs': 0, 'fat': 1.2},
+    'shrimp': {'calories': 99, 'protein': 24, 'carbs': 0.2, 'fat': 1.7},
+    'lentils': {'calories': 116, 'protein': 9, 'carbs': 20, 'fat': 0.4},
+    'chickpeas': {'calories': 164, 'protein': 8.9, 'carbs': 27.4, 'fat': 2.6},
+    'black beans': {'calories': 132, 'protein': 8.9, 'carbs': 23.7, 'fat': 0.5},
+    'potato': {'calories': 77, 'protein': 2, 'carbs': 17.2, 'fat': 0.1},
+    'sweet potato': {'calories': 86, 'protein': 1.6, 'carbs': 20.1, 'fat': 0.1},
+    'carrots': {'calories': 41, 'protein': 0.9, 'carbs': 9.6, 'fat': 0.2},
+    'broccoli': {'calories': 34, 'protein': 2.8, 'carbs': 6.6, 'fat': 0.4},
+    'spinach': {'calories': 23, 'protein': 2.9, 'carbs': 3.6, 'fat': 0.4},
+    'bell pepper': {'calories': 31, 'protein': 1, 'carbs': 6, 'fat': 0.3},
+    'mushrooms': {'calories': 22, 'protein': 3.1, 'carbs': 3.3, 'fat': 0.3},
+    'avocado': {'calories': 160, 'protein': 2, 'carbs': 8.5, 'fat': 14.7},
+    'almonds': {'calories': 579, 'protein': 21.2, 'carbs': 21.7, 'fat': 49.9},
+    'peanut butter': {'calories': 588, 'protein': 25, 'carbs': 20, 'fat': 50},
+    'honey': {'calories': 304, 'protein': 0.3, 'carbs': 82.4, 'fat': 0},
+    'maple syrup': {'calories': 260, 'protein': 0, 'carbs': 67, 'fat': 0},
+    'olive oil': {'calories': 884, 'protein': 0, 'carbs': 0, 'fat': 100},
+    'coconut oil': {'calories': 862, 'protein': 0, 'carbs': 0, 'fat': 100},
+    'butter': {'calories': 717, 'protein': 0.9, 'carbs': 0.1, 'fat': 81.1},
+    'cheese': {'calories': 402, 'protein': 25, 'carbs': 1.3, 'fat': 33.1},
+    'quinoa': {'calories': 120, 'protein': 4.4, 'carbs': 21.3, 'fat': 1.9},
+    'oats': {'calories': 389, 'protein': 16.9, 'carbs': 66.3, 'fat': 6.9},
+    'pasta': {'calories': 158, 'protein': 5.8, 'carbs': 31, 'fat': 0.9},
+    'tofu': {'calories': 76, 'protein': 8, 'carbs': 1.9, 'fat': 4.8},
+    'tempeh': {'calories': 192, 'protein': 20.3, 'carbs': 7.7, 'fat': 10.8},
+    'seitan': {'calories': 370, 'protein': 75, 'carbs': 14, 'fat': 2},
+    'chia seeds': {'calories': 486, 'protein': 17, 'carbs': 42, 'fat': 31},
+    'flax seeds': {'calories': 534, 'protein': 18.3, 'carbs': 28.9, 'fat': 42.2},
+    'pumpkin seeds': {'calories': 559, 'protein': 30.2, 'carbs': 10.7, 'fat': 49.1},
+    'sunflower seeds': {'calories': 584, 'protein': 20.8, 'carbs': 20, 'fat': 51.5},
+    'walnuts': {'calories': 654, 'protein': 15.2, 'carbs': 13.7, 'fat': 65.2},
+    'cashews': {'calories': 553, 'protein': 18.2, 'carbs': 30.2, 'fat': 43.8},
+    'peanuts': {'calories': 567, 'protein': 25.8, 'carbs': 16.1, 'fat': 49.2},
+    'pecans': {'calories': 691, 'protein': 9.2, 'carbs': 13.9, 'fat': 72},
+    'pistachios': {'calories': 562, 'protein': 20.2, 'carbs': 27.2, 'fat': 45.3},
+    'blueberries': {'calories': 57, 'protein': 0.7, 'carbs': 14.5, 'fat': 0.3},
+    'strawberries': {'calories': 32, 'protein': 0.7, 'carbs': 7.7, 'fat': 0.3},
+    'raspberries': {'calories': 52, 'protein': 1.2, 'carbs': 11.9, 'fat': 0.7},
+    'blackberries': {'calories': 43, 'protein': 1.4, 'carbs': 9.6, 'fat': 0.5},
+    'grapes': {'calories': 69, 'protein': 0.6, 'carbs': 18.1, 'fat': 0.2},
+    'watermelon': {'calories': 30, 'protein': 0.6, 'carbs': 7.6, 'fat': 0.2},
+    'pineapple': {'calories': 50, 'protein': 0.5, 'carbs': 13.1, 'fat': 0.1},
+    'mango': {'calories': 60, 'protein': 0.8, 'carbs': 15, 'fat': 0.4},
+    'kiwi': {'calories': 61, 'protein': 1.1, 'carbs': 14.7, 'fat': 0.5},
+    'pear': {'calories': 57, 'protein': 0.4, 'carbs': 15.2, 'fat': 0.1},
+    'peach': {'calories': 39, 'protein': 0.9, 'carbs': 9.5, 'fat': 0.3},
+    'plum': {'calories': 46, 'protein': 0.7, 'carbs': 11.4, 'fat': 0.3},
+    'cherry': {'calories': 50, 'protein': 1, 'carbs': 12.2, 'fat': 0.3},
+    'cucumber': {'calories': 15, 'protein': 0.7, 'carbs': 3.6, 'fat': 0.1},
+    'tomato': {'calories': 18, 'protein': 0.9, 'carbs': 3.9, 'fat': 0.2},
+    'lettuce': {'calories': 15, 'protein': 1.4, 'carbs': 2.9, 'fat': 0.2},
+    'kale': {'calories': 49, 'protein': 4.3, 'carbs': 8.8, 'fat': 0.9},
+    'cauliflower': {'calories': 25, 'protein': 1.9, 'carbs': 5, 'fat': 0.3},
+    'brussels sprouts': {'calories': 43, 'protein': 3.4, 'carbs': 8.9, 'fat': 0.3},
+    'asparagus': {'calories': 20, 'protein': 2.2, 'carbs': 3.9, 'fat': 0.2},
+    'zucchini': {'calories': 17, 'protein': 1.2, 'carbs': 3.1, 'fat': 0.3},
+    'eggplant': {'calories': 25, 'protein': 1, 'carbs': 6, 'fat': 0.2},
+    'corn': {'calories': 86, 'protein': 3.2, 'carbs': 19, 'fat': 1.2},
+    'green beans': {'calories': 31, 'protein': 1.8, 'carbs': 7, 'fat': 0.2},
+    'peas': {'calories': 81, 'protein': 5.4, 'carbs': 14.5, 'fat': 0.4},
+    'sweet corn': {'calories': 86, 'protein': 3.2, 'carbs': 19, 'fat': 1.2},
+    'artichoke': {'calories': 47, 'protein': 3.3, 'carbs': 10.5, 'fat': 0.2},
+    'beetroot': {'calories': 43, 'protein': 1.6, 'carbs': 9.6, 'fat': 0.2},
+    'radish': {'calories': 16, 'protein': 0.7, 'carbs': 3.4, 'fat': 0.1},
+    'turnip': {'calories': 28, 'protein': 0.9, 'carbs': 6.4, 'fat': 0.1},
+    'rutabaga': {'calories': 37, 'protein': 1.2, 'carbs': 8.6, 'fat': 0.2},
+    'parsnip': {'calories': 75, 'protein': 1.2, 'carbs': 18, 'fat': 0.3},
+    'celery': {'calories': 16, 'protein': 0.7, 'carbs': 3, 'fat': 0.2},
+    'fennel': {'calories': 31, 'protein': 1.2, 'carbs': 7.3, 'fat': 0.2},
+    'leek': {'calories': 61, 'protein': 1.5, 'carbs': 14.2, 'fat': 0.3},
+    'onion': {'calories': 40, 'protein': 1.1, 'carbs': 9.3, 'fat': 0.1},
+    'garlic': {'calories': 149, 'protein': 6.4, 'carbs': 33.1, 'fat': 0.5},
+    'ginger': {'calories': 80, 'protein': 1.8, 'carbs': 17.8, 'fat': 0.8},
+    'turmeric': {'calories': 312, 'protein': 9.7, 'carbs': 67.1, 'fat': 3.2},
+    'cinnamon': {'calories': 247, 'protein': 3.9, 'carbs': 80.6, 'fat': 1.2},
+    'cumin': {'calories': 375, 'protein': 17.8, 'carbs': 44.2, 'fat': 22.3},
+    'paprika': {'calories': 282, 'protein': 14.1, 'carbs': 53.9, 'fat': 12.9},
+    'black pepper': {'calories': 251, 'protein': 10.4, 'carbs': 64, 'fat': 3.3},
+    'salt': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'sugar': {'calories': 387, 'protein': 0, 'carbs': 100, 'fat': 0},
+    'brown sugar': {'calories': 380, 'protein': 0, 'carbs': 98, 'fat': 0},
+    'maple syrup': {'calories': 260, 'protein': 0, 'carbs': 67, 'fat': 0},
+    'honey': {'calories': 304, 'protein': 0.3, 'carbs': 82.4, 'fat': 0},
+    'molasses': {'calories': 290, 'protein': 0, 'carbs': 75, 'fat': 0},
+    'agave nectar': {'calories': 310, 'protein': 0.1, 'carbs': 76, 'fat': 0.5},
+    'stevia': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'coconut sugar': {'calories': 380, 'protein': 0, 'carbs': 100, 'fat': 0},
+    'date sugar': {'calories': 350, 'protein': 1.8, 'carbs': 93, 'fat': 0},
+    'monk fruit': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'erythritol': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'xylitol': {'calories': 240, 'protein': 0, 'carbs': 100, 'fat': 0},
+    'sucralose': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'aspartame': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'saccharin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'acesulfame k': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'neotame': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'advantame': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'alitame': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'cyclamate': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'thaumatin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'glycyrrhizin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'miraculin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'brazzein': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'curculin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'mabinlin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'pentadin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'monellin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'osladin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'phyllodulcin': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'pterocaryoside': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'siraitia grosvenorii': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
+    'steviol glycoside': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0}
+}
+
+@app.route('/api/calculate-nutrients', methods=['POST'])
+def calculate_nutrients():
+    try:
+        data = request.get_json()
+        food_items = data.get('foodItems', [])
+        
+        if not food_items:
+            return jsonify({"error": "No food items provided"}), 400
+        
+        total_calories = 0
+        total_protein = 0
+        total_carbs = 0
+        total_fat = 0
+        items = {}
+        
+        for item in food_items:
+            name = item['name'].lower()
+            quantity = item['quantity']
+            
+            if name in FOOD_DATABASE:
+                food_info = FOOD_DATABASE[name]
+                # Calculate nutrients based on quantity (per 100g)
+                multiplier = quantity / 100
+                
+                calories = round(food_info['calories'] * multiplier)
+                protein = round(food_info['protein'] * multiplier, 1)
+                carbs = round(food_info['carbs'] * multiplier, 1)
+                fat = round(food_info['fat'] * multiplier, 1)
+                
+                total_calories += calories
+                total_protein += protein
+                total_carbs += carbs
+                total_fat += fat
+                
+                items[name] = {
+                    "calories": calories,
+                    "protein": protein,
+                    "carbs": carbs,
+                    "fat": fat
+                }
+            else:
+                return jsonify({"error": f"Food item '{name}' not found in database"}), 400
+        
+        return jsonify({
+            "totalCalories": total_calories,
+            "totalProtein": round(total_protein, 1),
+            "totalCarbs": round(total_carbs, 1),
+            "totalFat": round(total_fat, 1),
+            "items": items
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Food nutrition database (simplified for demo)
 FOOD_NUTRITION = {
-    'apple': {'calories': 95, 'protein': 0.5, 'carbs': 25, 'fat': 0.3},
-    'banana': {'calories': 105, 'protein': 1.3, 'carbs': 27, 'fat': 0.4},
-    'orange': {'calories': 62, 'protein': 1.2, 'carbs': 15, 'fat': 0.2},
-    'sandwich': {'calories': 350, 'protein': 15, 'carbs': 45, 'fat': 12},
-    'pizza': {'calories': 285, 'protein': 12, 'carbs': 36, 'fat': 10},
-    'salad': {'calories': 150, 'protein': 5, 'carbs': 20, 'fat': 8},
-    'hamburger': {'calories': 354, 'protein': 25, 'carbs': 30, 'fat': 20},
-    'fries': {'calories': 365, 'protein': 4, 'carbs': 48, 'fat': 17},
-    'chicken': {'calories': 335, 'protein': 31, 'carbs': 0, 'fat': 20},
-    'rice': {'calories': 130, 'protein': 2.7, 'carbs': 28, 'fat': 0.3},
-    'pasta': {'calories': 131, 'protein': 5, 'carbs': 25, 'fat': 1.1},
-    'bread': {'calories': 79, 'protein': 2.7, 'carbs': 15, 'fat': 1},
-    'egg': {'calories': 70, 'protein': 6, 'carbs': 0.6, 'fat': 5},
-    'milk': {'calories': 103, 'protein': 8, 'carbs': 12, 'fat': 2.4},
-    'cheese': {'calories': 113, 'protein': 7, 'carbs': 0.4, 'fat': 9},
-    'yogurt': {'calories': 100, 'protein': 5, 'carbs': 7, 'fat': 3},
-    'coffee': {'calories': 2, 'protein': 0.1, 'carbs': 0, 'fat': 0},
-    'tea': {'calories': 2, 'protein': 0, 'carbs': 0, 'fat': 0},
-    'water': {'calories': 0, 'protein': 0, 'carbs': 0, 'fat': 0},
-    'soda': {'calories': 150, 'protein': 0, 'carbs': 39, 'fat': 0},
+    'apple': {
+        'calories': 52,
+        'protein': 0.3,
+        'carbs': 13.8,
+        'fat': 0.2,
+        'fiber': 2.4,
+        'sugar': 10.4,
+        'vitamin_c': 4.6,
+        'potassium': 107,
+        'calcium': 6,
+        'iron': 0.1
+    },
+    'banana': {
+        'calories': 89,
+        'protein': 1.1,
+        'carbs': 22.8,
+        'fat': 0.3,
+        'fiber': 2.6,
+        'sugar': 12.2,
+        'vitamin_c': 8.7,
+        'potassium': 358,
+        'calcium': 5,
+        'iron': 0.3
+    },
+    'chicken breast': {
+        'calories': 165,
+        'protein': 31,
+        'carbs': 0,
+        'fat': 3.6,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 256,
+        'calcium': 15,
+        'iron': 0.7
+    },
+    'rice': {
+        'calories': 130,
+        'protein': 2.7,
+        'carbs': 28.2,
+        'fat': 0.3,
+        'fiber': 0.4,
+        'sugar': 0.1,
+        'vitamin_c': 0,
+        'potassium': 35,
+        'calcium': 10,
+        'iron': 0.2
+    },
+    'salmon': {
+        'calories': 208,
+        'protein': 22,
+        'carbs': 0,
+        'fat': 13,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 3.9,
+        'potassium': 363,
+        'calcium': 9,
+        'iron': 0.3
+    },
+    'egg': {
+        'calories': 155,
+        'protein': 12.6,
+        'carbs': 0.6,
+        'fat': 11.3,
+        'fiber': 0,
+        'sugar': 0.6,
+        'vitamin_c': 0,
+        'potassium': 126,
+        'calcium': 56,
+        'iron': 1.8
+    },
+    'bread': {
+        'calories': 265,
+        'protein': 9,
+        'carbs': 49,
+        'fat': 3.2,
+        'fiber': 2.7,
+        'sugar': 5,
+        'vitamin_c': 0,
+        'potassium': 115,
+        'calcium': 260,
+        'iron': 3.6
+    },
+    'milk': {
+        'calories': 42,
+        'protein': 3.4,
+        'carbs': 5,
+        'fat': 1,
+        'fiber': 0,
+        'sugar': 5,
+        'vitamin_c': 0,
+        'potassium': 150,
+        'calcium': 125,
+        'iron': 0.1
+    },
+    'yogurt': {
+        'calories': 59,
+        'protein': 3.5,
+        'carbs': 4.7,
+        'fat': 3.3,
+        'fiber': 0,
+        'sugar': 4.7,
+        'vitamin_c': 0.5,
+        'potassium': 141,
+        'calcium': 121,
+        'iron': 0.1
+    },
+    'beef': {
+        'calories': 250,
+        'protein': 26,
+        'carbs': 0,
+        'fat': 17,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 318,
+        'calcium': 12,
+        'iron': 2.6
+    },
+    'pork': {
+        'calories': 242,
+        'protein': 27,
+        'carbs': 0,
+        'fat': 14,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 384,
+        'calcium': 19,
+        'iron': 0.9
+    },
+    'turkey': {
+        'calories': 157,
+        'protein': 29,
+        'carbs': 0,
+        'fat': 3.6,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 289,
+        'calcium': 13,
+        'iron': 1.1
+    },
+    'tuna': {
+        'calories': 132,
+        'protein': 28,
+        'carbs': 0,
+        'fat': 1.2,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 441,
+        'calcium': 8,
+        'iron': 1.3
+    },
+    'shrimp': {
+        'calories': 99,
+        'protein': 24,
+        'carbs': 0.2,
+        'fat': 1.7,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 2.2,
+        'potassium': 220,
+        'calcium': 70,
+        'iron': 0.5
+    },
+    'lentils': {
+        'calories': 116,
+        'protein': 9,
+        'carbs': 20,
+        'fat': 0.4,
+        'fiber': 7.9,
+        'sugar': 1.8,
+        'vitamin_c': 1.5,
+        'potassium': 369,
+        'calcium': 19,
+        'iron': 3.3
+    },
+    'chickpeas': {
+        'calories': 164,
+        'protein': 8.9,
+        'carbs': 27.4,
+        'fat': 2.6,
+        'fiber': 7.6,
+        'sugar': 4.8,
+        'vitamin_c': 1.3,
+        'potassium': 291,
+        'calcium': 49,
+        'iron': 2.9
+    },
+    'black beans': {
+        'calories': 132,
+        'protein': 8.9,
+        'carbs': 23.7,
+        'fat': 0.5,
+        'fiber': 8.7,
+        'sugar': 0.3,
+        'vitamin_c': 0,
+        'potassium': 355,
+        'calcium': 27,
+        'iron': 2.1
+    },
+    'potato': {
+        'calories': 77,
+        'protein': 2,
+        'carbs': 17.2,
+        'fat': 0.1,
+        'fiber': 2.2,
+        'sugar': 0.8,
+        'vitamin_c': 19.7,
+        'potassium': 421,
+        'calcium': 12,
+        'iron': 0.8
+    },
+    'sweet potato': {
+        'calories': 86,
+        'protein': 1.6,
+        'carbs': 20.1,
+        'fat': 0.1,
+        'fiber': 3,
+        'sugar': 4.2,
+        'vitamin_c': 2.4,
+        'potassium': 337,
+        'calcium': 30,
+        'iron': 0.6
+    },
+    'carrots': {
+        'calories': 41,
+        'protein': 0.9,
+        'carbs': 9.6,
+        'fat': 0.2,
+        'fiber': 2.8,
+        'sugar': 4.7,
+        'vitamin_c': 5.9,
+        'potassium': 320,
+        'calcium': 33,
+        'iron': 0.3
+    },
+    'broccoli': {
+        'calories': 34,
+        'protein': 2.8,
+        'carbs': 6.6,
+        'fat': 0.4,
+        'fiber': 2.6,
+        'sugar': 1.7,
+        'vitamin_c': 89.2,
+        'potassium': 316,
+        'calcium': 47,
+        'iron': 0.7
+    },
+    'spinach': {
+        'calories': 23,
+        'protein': 2.9,
+        'carbs': 3.6,
+        'fat': 0.4,
+        'fiber': 2.2,
+        'sugar': 0.4,
+        'vitamin_c': 28.1,
+        'potassium': 558,
+        'calcium': 99,
+        'iron': 2.7
+    },
+    'bell pepper': {
+        'calories': 31,
+        'protein': 1,
+        'carbs': 6,
+        'fat': 0.3,
+        'fiber': 2.1,
+        'sugar': 4.2,
+        'vitamin_c': 127.7,
+        'potassium': 211,
+        'calcium': 7,
+        'iron': 0.4
+    },
+    'mushrooms': {
+        'calories': 22,
+        'protein': 3.1,
+        'carbs': 3.3,
+        'fat': 0.3,
+        'fiber': 1,
+        'sugar': 1.7,
+        'vitamin_c': 2.1,
+        'potassium': 318,
+        'calcium': 3,
+        'iron': 0.5
+    },
+    'avocado': {
+        'calories': 160,
+        'protein': 2,
+        'carbs': 8.5,
+        'fat': 14.7,
+        'fiber': 6.7,
+        'sugar': 0.7,
+        'vitamin_c': 10,
+        'potassium': 485,
+        'calcium': 12,
+        'iron': 0.6
+    },
+    'almonds': {
+        'calories': 579,
+        'protein': 21.2,
+        'carbs': 21.7,
+        'fat': 49.9,
+        'fiber': 12.5,
+        'sugar': 4.4,
+        'vitamin_c': 0,
+        'potassium': 733,
+        'calcium': 269,
+        'iron': 3.7
+    },
+    'peanut butter': {
+        'calories': 588,
+        'protein': 25,
+        'carbs': 20,
+        'fat': 50,
+        'fiber': 6,
+        'sugar': 9,
+        'vitamin_c': 0,
+        'potassium': 649,
+        'calcium': 49,
+        'iron': 1.9
+    },
+    'honey': {
+        'calories': 304,
+        'protein': 0.3,
+        'carbs': 82.4,
+        'fat': 0,
+        'fiber': 0.2,
+        'sugar': 82.1,
+        'vitamin_c': 0.5,
+        'potassium': 52,
+        'calcium': 6,
+        'iron': 0.4
+    },
+    'maple syrup': {
+        'calories': 260,
+        'protein': 0,
+        'carbs': 67,
+        'fat': 0,
+        'fiber': 0,
+        'sugar': 67,
+        'vitamin_c': 0,
+        'potassium': 212,
+        'calcium': 102,
+        'iron': 0.1
+    },
+    'olive oil': {
+        'calories': 884,
+        'protein': 0,
+        'carbs': 0,
+        'fat': 100,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 1,
+        'calcium': 1,
+        'iron': 0.6
+    },
+    'coconut oil': {
+        'calories': 862,
+        'protein': 0,
+        'carbs': 0,
+        'fat': 100,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 0,
+        'calcium': 0,
+        'iron': 0
+    },
+    'butter': {
+        'calories': 717,
+        'protein': 0.9,
+        'carbs': 0.1,
+        'fat': 81.1,
+        'fiber': 0,
+        'sugar': 0.1,
+        'vitamin_c': 0,
+        'potassium': 24,
+        'calcium': 24,
+        'iron': 0
+    },
+    'cheese': {
+        'calories': 402,
+        'protein': 25,
+        'carbs': 1.3,
+        'fat': 33.1,
+        'fiber': 0,
+        'sugar': 0.5,
+        'vitamin_c': 0,
+        'potassium': 98,
+        'calcium': 721,
+        'iron': 0.2
+    },
+    'quinoa': {
+        'calories': 120,
+        'protein': 4.4,
+        'carbs': 21.3,
+        'fat': 1.9,
+        'fiber': 2.8,
+        'sugar': 0.9,
+        'vitamin_c': 0,
+        'potassium': 172,
+        'calcium': 17,
+        'iron': 1.5
+    },
+    'oats': {
+        'calories': 389,
+        'protein': 16.9,
+        'carbs': 66.3,
+        'fat': 6.9,
+        'fiber': 10.6,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 429,
+        'calcium': 54,
+        'iron': 4.7
+    },
+    'pasta': {
+        'calories': 158,
+        'protein': 5.8,
+        'carbs': 31,
+        'fat': 0.9,
+        'fiber': 1.8,
+        'sugar': 0.6,
+        'vitamin_c': 0,
+        'potassium': 44,
+        'calcium': 7,
+        'iron': 1.3
+    },
+    'tofu': {
+        'calories': 76,
+        'protein': 8,
+        'carbs': 1.9,
+        'fat': 4.8,
+        'fiber': 0.3,
+        'sugar': 0.6,
+        'vitamin_c': 0.1,
+        'potassium': 121,
+        'calcium': 350,
+        'iron': 5.4
+    },
+    'tempeh': {
+        'calories': 192,
+        'protein': 20.3,
+        'carbs': 7.7,
+        'fat': 10.8,
+        'fiber': 0,
+        'sugar': 0,
+        'vitamin_c': 0,
+        'potassium': 412,
+        'calcium': 111,
+        'iron': 2.7
+    },
+    'seitan': {
+        'calories': 370,
+        'protein': 75,
+        'carbs': 14,
+        'fat': 2,
+        'fiber': 0.6,
+        'sugar': 2.9,
+        'vitamin_c': 0,
+        'potassium': 100,
+        'calcium': 142,
+        'iron': 5.2
+    }
 }
 
 # Load YOLOv5 model

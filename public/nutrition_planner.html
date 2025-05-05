@@ -12,6 +12,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <!-- Add SheetJS library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
       :root {
         --primary: #5ac8fa;
@@ -336,11 +338,22 @@
       }
 
       .btn-success {
-        background-color: var(--success);
+        background: var(--success);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .btn-success:hover {
-        background-color: #28a745;
+        background: #2ea043;
+        transform: translateY(-2px);
       }
 
       /* Meals section */
@@ -360,57 +373,128 @@
       }
 
       .meal-item {
+        background: var(--background);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
-        background-color: #ffffff;
-        border-radius: 12px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
+        gap: 20px;
       }
 
       .meal-item:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
       }
 
       .meal-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
+        flex: 1;
       }
 
-      .meal-icon {
-        width: 48px;
-        height: 48px;
-        background-color: rgba(90, 200, 250, 0.1);
-        color: var(--primary);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .meal-icon i {
-        font-size: 1.2rem;
-      }
-
-      .meal-details h4 {
+      .meal-title {
+        font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 4px;
+        color: var(--text);
+        margin-bottom: 5px;
       }
 
-      .meal-details p {
+      .meal-details {
+        display: flex;
+        gap: 15px;
         color: var(--text-light);
         font-size: 0.9rem;
       }
 
+      .meal-type {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+
+      .meal-time {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .meal-nutrition {
+        text-align: right;
+      }
+
       .meal-calories {
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--primary-dark);
-        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+
+      .meal-macros {
+        display: flex;
+        gap: 15px;
+      }
+
+      .macro-item {
+        text-align: center;
+      }
+
+      .macro-value {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .macro-label {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      .delete-meal {
+        color: #dc3545;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .delete-meal:hover {
+        background: rgba(220, 53, 69, 0.1);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
       }
 
       /* Suggestions section */
@@ -797,6 +881,7 @@
       .water-cup i {
         font-size: 1rem;
       }
+
       .back-button {
         display: flex;
         align-items: center;
@@ -807,9 +892,6 @@
         height: 36px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-      }
-      a{
-        text-decoration: none;
       }
 
       .back-button:hover {
@@ -892,11 +974,13 @@
         object-fit: contain;
         margin: 1rem 0;
       }
+
       .detection-box {
         position: absolute;
         border: 2px solid #48bb78;
         background-color: rgba(72, 187, 120, 0.1);
       }
+
       .detection-label {
         position: absolute;
         background-color: #48bb78;
@@ -904,6 +988,245 @@
         padding: 2px 6px;
         font-size: 12px;
         border-radius: 4px;
+      }
+
+      /* Nutrition Calculator Styles */
+      .nutrition-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 20px 0;
+      }
+
+      .food-input-form {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .btn-primary {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+        flex: 1;
+      }
+
+      .btn-primary:hover {
+        background: #45a049;
+      }
+
+      .food-items-list {
+        margin: 20px 0;
+      }
+
+      .items-list {
+        margin-top: 10px;
+      }
+
+      .food-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+
+      .food-item-info {
+        flex: 1;
+      }
+
+      .food-item-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .remove-btn {
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      .remove-btn:hover {
+        background: #cc0000;
+      }
+
+      .nutrition-results {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+
+      .nutrition-details {
+        margin-top: 10px;
+      }
+
+      .nutrition-details p {
+        margin: 5px 0;
+        color: #666;
+      }
+
+      .error {
+        color: #ff4444;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: black;
+      }
+
+      .meals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .meal-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .meal-info {
+        flex: 1;
+      }
+
+      .meal-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .meal-details {
+        color: #6c757d;
+        font-size: 0.9em;
+      }
+
+      .meal-nutrition {
+        text-align: right;
+      }
+
+      .meal-macros {
+        display: flex;
+        gap: 15px;
+        margin-top: 5px;
+      }
+
+      .macro-item {
+        text-align: center;
+      }
+
+      .macro-value {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .macro-label {
+        font-size: 0.8em;
+        color: #6c757d;
+      }
+
+      .delete-meal {
+        color: #dc3545;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      .delete-meal:hover {
+        color: #c82333;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--background-alt);
+        border-radius: 12px;
+        margin: 20px 0;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+      }
+
+      .empty-state p {
+        color: var(--text-light);
+        margin-bottom: 20px;
+      }
+
+      .export-container {
+        text-align: center;
+        padding: 20px;
       }
     </style>
   </head>
@@ -1093,67 +1416,60 @@
             </div>
           </div>
 
-          <!-- Meals Card -->
+          <!-- Today's Meal Card -->
           <div class="card">
-            <div class="meals-header">
-              <h2><i class="fas fa-utensils"></i> Today's Meals</h2>
-              <button class="btn btn-accent">
-                <i class="fas fa-plus"></i> Add Meal
-              </button>
+            <div class="card-header">
+                <h5 class="card-title">Today's Meal</h5>
+                <button class="btn btn-primary" onclick="openMealForm()">Add Meal</button>
             </div>
-
-            <div class="meal-list">
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-coffee"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Breakfast</h4>
-                    <p>Oatmeal with banana</p>
-                  </div>
+            <div class="card-body">
+                <div id="mealsList" class="meals-list">
+                    <!-- Meals will be displayed here -->
                 </div>
-                <div class="meal-calories">320 cal</div>
-              </div>
+            </div>
+          </div>
 
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-utensils"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Lunch</h4>
-                    <p>Grilled chicken salad</p>
-                  </div>
+          <!-- Meal Form Modal -->
+          <div id="mealFormModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Add New Meal</h5>
+                    <span class="close" onclick="closeMealForm()">&times;</span>
                 </div>
-                <div class="meal-calories">520 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-apple-alt"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Snack</h4>
-                    <p>Greek yogurt with berries</p>
-                  </div>
+                <div class="modal-body">
+                    <form id="mealForm" onsubmit="saveMeal(event)">
+                        <div class="form-group">
+                            <label for="mealType">Meal Type</label>
+                            <select id="mealType" class="form-control" required>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mealName">Meal Name</label>
+                            <input type="text" id="mealName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mealTime">Time</label>
+                            <input type="time" id="mealTime" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="protein">Protein (g)</label>
+                            <input type="number" id="protein" class="form-control" min="0" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="carbs">Carbs (g)</label>
+                            <input type="number" id="carbs" class="form-control" min="0" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fats">Fats (g)</label>
+                            <input type="number" id="fats" class="form-control" min="0" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Meal</button>
+                    </form>
                 </div>
-                <div class="meal-calories">180 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-hamburger"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Dinner</h4>
-                    <p>Salmon with quinoa and vegetables</p>
-                  </div>
-                </div>
-                <div class="meal-calories">430 cal</div>
-              </div>
             </div>
           </div>
         </div>
@@ -1271,197 +1587,51 @@
 
           <!-- Upcoming Meal Plan Card -->
           <div class="card">
-            <h2><i class="fas fa-calendar-alt"></i> Upcoming Meal Plan</h2>
+            <h2><i class="fas fa-calculator"></i> Nutrient Calculator</h2>
 
-            <div class="meal-list">
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Breakfast</h4>
-                    <p>Protein pancakes with berries</p>
-                  </div>
+            <div class="nutrition-section">
+                <div class="nutrition-content">
+                    <div class="food-input-form">
+                        <h3>Add Food Items</h3>
+                        <form id="foodForm">
+                            <div class="form-group">
+                                <label for="foodName">Food Name:</label>
+                                <input type="text" id="foodName" name="foodName" placeholder="e.g., apple, rice, chicken" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="foodQuantity">Quantity (grams):</label>
+                                <input type="number" id="foodQuantity" name="foodQuantity" min="1" value="100" required>
+                            </div>
+                            <div class="button-group">
+                                <button type="button" class="btn-primary" onclick="addFoodItem()">Add Item</button>
+                                <button type="button" class="btn-primary" onclick="calculateNutrition()">Calculate Total</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="food-items-list">
+                        <h3>Added Food Items</h3>
+                        <div id="foodItemsList" class="items-list">
+                            <!-- Food items will be added here -->
+                        </div>
+                    </div>
+
+                    <div class="nutrition-results">
+                        <h3>Total Nutrition Information</h3>
+                        <div id="nutritionDetails" class="nutrition-details">
+                            <p>Add food items to see nutrition information</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="meal-calories">340 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-cloud-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Lunch</h4>
-                    <p>Quinoa bowl with veggies and tofu</p>
-                  </div>
-                </div>
-                <div class="meal-calories">450 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-moon"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Dinner</h4>
-                    <p>Grilled fish with roasted vegetables</p>
-                  </div>
-                </div>
-                <div class="meal-calories">380 cal</div>
-              </div>
-            </div>
-
-            <div style="margin-top: 20px; text-align: center">
-              <button class="btn btn-outline">
-                <i class="fas fa-edit"></i> Edit Meal Plan
-              </button>
             </div>
           </div>
 
           <!-- Weekly Progress Card -->
           <div class="card">
             <h2><i class="fas fa-chart-line"></i> Weekly Progress</h2>
-
-            <div style="margin: 20px 0">
-              <div style="margin-bottom: 15px">
-                <h4 style="margin-bottom: 5px">Calories Consumed</h4>
-                <div
-                  style="
-                    height: 10px;
-                    background-color: #f0f0f0;
-                    border-radius: 5px;
-                    overflow: hidden;
-                  "
-                >
-                  <div
-                    style="
-                      width: 85%;
-                      height: 100%;
-                      background-color: var(--primary);
-                      border-radius: 5px;
-                    "
-                  ></div>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 5px;
-                    font-size: 0.9rem;
-                    color: var(--text-light);
-                  "
-                >
-                  <span>10,850 / 12,800 cal</span>
-                  <span>85%</span>
-                </div>
-              </div>
-
-              <div style="margin-bottom: 15px">
-                <h4 style="margin-bottom: 5px">Protein Goal</h4>
-                <div
-                  style="
-                    height: 10px;
-                    background-color: #f0f0f0;
-                    border-radius: 5px;
-                    overflow: hidden;
-                  "
-                >
-                  <div
-                    style="
-                      width: 92%;
-                      height: 100%;
-                      background-color: var(--primary);
-                      border-radius: 5px;
-                    "
-                  ></div>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 5px;
-                    font-size: 0.9rem;
-                    color: var(--text-light);
-                  "
-                >
-                  <span>460 / 500 g</span>
-                  <span>92%</span>
-                </div>
-              </div>
-
-              <div style="margin-bottom: 15px">
-                <h4 style="margin-bottom: 5px">Water Goal</h4>
-                <div
-                  style="
-                    height: 10px;
-                    background-color: #f0f0f0;
-                    border-radius: 5px;
-                    overflow: hidden;
-                  "
-                >
-                  <div
-                    style="
-                      width: 78%;
-                      height: 100%;
-                      background-color: var(--primary);
-                      border-radius: 5px;
-                    "
-                  ></div>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 5px;
-                    font-size: 0.9rem;
-                    color: var(--text-light);
-                  "
-                >
-                  <span>10.9 / 14 L</span>
-                  <span>78%</span>
-                </div>
-              </div>
-
-              <div>
-                <h4 style="margin-bottom: 5px">Exercise Minutes</h4>
-                <div
-                  style="
-                    height: 10px;
-                    background-color: #f0f0f0;
-                    border-radius: 5px;
-                    overflow: hidden;
-                  "
-                >
-                  <div
-                    style="
-                      width: 65%;
-                      height: 100%;
-                      background-color: var(--primary);
-                      border-radius: 5px;
-                    "
-                  ></div>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 5px;
-                    font-size: 0.9rem;
-                    color: var(--text-light);
-                  "
-                >
-                  <span>195 / 300 min</span>
-                  <span>65%</span>
-                </div>
-              </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 20px">
-              <button class="btn btn-success">
-                <i class="fas fa-download"></i> Export Progress Report
+            <div class="export-container">
+              <button class="btn btn-success" onclick="exportMealData()">
+                <i class="fas fa-file-excel"></i> Export Meal Report
               </button>
             </div>
           </div>
@@ -1996,6 +2166,306 @@
           document.getElementById('loadingIndicator').style.display = 'none';
           showNotification('Failed to load test image', 'error');
         }
+      }
+
+      // Nutrition Calculator Functions
+      let foodItems = [];
+
+      function addFoodItem() {
+        const foodName = document.getElementById('foodName').value.trim();
+        const quantity = document.getElementById('foodQuantity').value.trim();
+
+        if (!foodName || !quantity) {
+          alert('Please enter both food name and quantity');
+          return;
+        }
+
+        const quantityNum = parseFloat(quantity);
+        if (isNaN(quantityNum) || quantityNum <= 0) {
+          alert('Please enter a valid quantity');
+          return;
+        }
+
+        foodItems.push({
+          name: foodName,
+          quantity: quantityNum
+        });
+
+        updateFoodItemsList();
+        document.getElementById('foodName').value = '';
+        document.getElementById('foodQuantity').value = '';
+      }
+
+      function removeFoodItem(index) {
+        foodItems.splice(index, 1);
+        updateFoodItemsList();
+      }
+
+      function updateFoodItemsList() {
+        const itemsList = document.getElementById('foodItemsList');
+        itemsList.innerHTML = '';
+
+        foodItems.forEach((item, index) => {
+          const itemElement = document.createElement('div');
+          itemElement.className = 'food-item';
+          itemElement.innerHTML = `
+            <div class="food-item-info">
+              ${item.name} - ${item.quantity}g
+            </div>
+            <div class="food-item-actions">
+              <button class="remove-btn" onclick="removeFoodItem(${index})">Remove</button>
+            </div>
+          `;
+          itemsList.appendChild(itemElement);
+        });
+      }
+
+      async function calculateNutrition() {
+        if (foodItems.length === 0) {
+          alert('Please add at least one food item');
+          return;
+        }
+
+        try {
+          const response = await fetch('http://localhost:5000/api/calculate-nutrients', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            mode: 'cors',
+            credentials: 'omit',
+            body: JSON.stringify({ foodItems })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to calculate nutrition');
+          }
+
+          const data = await response.json();
+          displayNutritionResults(data);
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to calculate nutrition. Please try again.');
+        }
+      }
+
+      function displayNutritionResults(data) {
+        const resultsDiv = document.getElementById('nutritionDetails');
+        resultsDiv.innerHTML = `
+          <h3>Nutrition Summary</h3>
+          <div class="nutrition-details">
+            <p>Total Calories: ${data.totalCalories.toFixed(1)} kcal</p>
+            <p>Protein: ${data.totalProtein.toFixed(1)}g</p>
+            <p>Carbohydrates: ${data.totalCarbs.toFixed(1)}g</p>
+            <p>Fat: ${data.totalFat.toFixed(1)}g</p>
+          </div>
+        `;
+      }
+
+      let meals = JSON.parse(localStorage.getItem('meals')) || [];
+
+      function openMealForm() {
+        document.getElementById('mealFormModal').style.display = 'block';
+      }
+
+      function closeMealForm() {
+        document.getElementById('mealFormModal').style.display = 'none';
+      }
+
+      function saveMeal(event) {
+        event.preventDefault();
+        
+        const meal = {
+          id: Date.now(),
+          type: document.getElementById('mealType').value,
+          name: document.getElementById('mealName').value,
+          time: document.getElementById('mealTime').value,
+          protein: parseFloat(document.getElementById('protein').value),
+          carbs: parseFloat(document.getElementById('carbs').value),
+          fats: parseFloat(document.getElementById('fats').value),
+          calories: calculateMealCalories(
+            parseFloat(document.getElementById('protein').value),
+            parseFloat(document.getElementById('carbs').value),
+            parseFloat(document.getElementById('fats').value)
+          )
+        };
+        
+        meals.push(meal);
+        localStorage.setItem('meals', JSON.stringify(meals));
+        updateMealsList();
+        updateDailySummary();
+        closeMealForm();
+        document.getElementById('mealForm').reset();
+      }
+
+      function calculateMealCalories(protein, carbs, fats) {
+        return (protein * 4) + (carbs * 4) + (fats * 9);
+      }
+
+      function deleteMeal(id) {
+        meals = meals.filter(meal => meal.id !== id);
+        localStorage.setItem('meals', JSON.stringify(meals));
+        updateMealsList();
+        updateDailySummary();
+      }
+
+      function updateMealsList() {
+        const mealsList = document.getElementById('mealsList');
+        mealsList.innerHTML = '';
+        
+        if (meals.length === 0) {
+          mealsList.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-utensils"></i>
+              <p>No meals added yet</p>
+              <button class="btn btn-primary" onclick="openMealForm()">Add Your First Meal</button>
+            </div>
+          `;
+          return;
+        }
+        
+        // Sort meals by time
+        meals.sort((a, b) => a.time.localeCompare(b.time));
+        
+        meals.forEach(meal => {
+          const mealElement = document.createElement('div');
+          mealElement.className = 'meal-item';
+          mealElement.innerHTML = `
+            <div class="meal-info">
+              <div class="meal-title">${meal.name}</div>
+              <div class="meal-details">
+                <span class="meal-type">${meal.type.charAt(0).toUpperCase() + meal.type.slice(1)}</span>
+                <span class="meal-time"><i class="far fa-clock"></i> ${meal.time}</span>
+              </div>
+            </div>
+            <div class="meal-nutrition">
+              <div class="meal-calories">${meal.calories} kcal</div>
+              <div class="meal-macros">
+                <div class="macro-item">
+                  <div class="macro-value">${meal.protein}g</div>
+                  <div class="macro-label">Protein</div>
+                </div>
+                <div class="macro-item">
+                  <div class="macro-value">${meal.carbs}g</div>
+                  <div class="macro-label">Carbs</div>
+                </div>
+                <div class="macro-item">
+                  <div class="macro-value">${meal.fats}g</div>
+                  <div class="macro-label">Fats</div>
+                </div>
+              </div>
+            </div>
+            <div class="delete-meal" onclick="deleteMeal(${meal.id})">
+              <i class="fas fa-trash"></i>
+            </div>
+          `;
+          mealsList.appendChild(mealElement);
+        });
+      }
+
+      function updateDailySummary() {
+        const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
+        const totalProtein = meals.reduce((sum, meal) => sum + meal.protein, 0);
+        const totalCarbs = meals.reduce((sum, meal) => sum + meal.carbs, 0);
+        const totalFats = meals.reduce((sum, meal) => sum + meal.fats, 0);
+
+        // Update the circular progress
+        const calorieGoal = 2000; // Example goal
+        const caloriePercentage = Math.min(100, (totalCalories / calorieGoal) * 100);
+        const circleProgress = document.querySelector(".circle-progress");
+        const circumference = 2 * Math.PI * 80;
+        circleProgress.style.strokeDashoffset = circumference * (1 - caloriePercentage / 100);
+
+        // Update the calorie numbers
+        document.querySelector('.calorie-item:nth-child(1) .value').textContent = totalCalories.toFixed(0);
+        document.querySelector('.calorie-item:nth-child(2) .value').textContent = calorieGoal;
+        document.querySelector('.calorie-item:nth-child(3) .value').textContent = (calorieGoal - totalCalories).toFixed(0);
+
+        // Update the progress text
+        document.querySelector('.progress-text .big-text').textContent = `${caloriePercentage.toFixed(0)}%`;
+      }
+
+      // Initialize the meals list and daily summary when the page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        updateMealsList();
+        updateDailySummary();
+      });
+
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const modal = document.getElementById('mealFormModal');
+        if (event.target === modal) {
+          closeMealForm();
+        }
+      }
+
+      // Add export functionality
+      function exportMealData() {
+        // Get the meals data
+        const meals = JSON.parse(localStorage.getItem('meals')) || [];
+        
+        // Create worksheet data
+        const wsData = [
+          // Headers
+          ['Meal Report', '', '', '', '', ''],
+          ['Generated on: ' + new Date().toLocaleString(), '', '', '', '', ''],
+          ['', '', '', '', '', ''],
+          ['Meal Type', 'Meal Name', 'Time', 'Calories', 'Protein (g)', 'Carbs (g)', 'Fats (g)'],
+        ];
+
+        // Add meal data
+        meals.forEach(meal => {
+          wsData.push([
+            meal.type,
+            meal.name,
+            meal.time,
+            meal.calories,
+            meal.protein,
+            meal.carbs,
+            meal.fats
+          ]);
+        });
+
+        // Add summary
+        const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
+        const totalProtein = meals.reduce((sum, meal) => sum + meal.protein, 0);
+        const totalCarbs = meals.reduce((sum, meal) => sum + meal.carbs, 0);
+        const totalFats = meals.reduce((sum, meal) => sum + meal.fats, 0);
+
+        wsData.push(
+          ['', '', '', '', '', ''],
+          ['Summary', '', '', '', '', ''],
+          ['Total Calories', totalCalories, '', '', '', ''],
+          ['Total Protein', totalProtein + 'g', '', '', '', ''],
+          ['Total Carbs', totalCarbs + 'g', '', '', '', ''],
+          ['Total Fats', totalFats + 'g', '', '', '', '']
+        );
+
+        // Create worksheet
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Set column widths
+        const colWidths = [
+          { wch: 15 }, // Meal Type
+          { wch: 20 }, // Meal Name
+          { wch: 10 }, // Time
+          { wch: 10 }, // Calories
+          { wch: 12 }, // Protein
+          { wch: 12 }, // Carbs
+          { wch: 12 }  // Fats
+        ];
+        ws['!cols'] = colWidths;
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Meal Report");
+
+        // Generate file name with current date
+        const fileName = `meal_report_${new Date().toISOString().split('T')[0]}.xlsx`;
+
+        // Save the file
+        XLSX.writeFile(wb, fileName);
       }
     </script>
   </body>
