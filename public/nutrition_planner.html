@@ -1108,129 +1108,81 @@
             </div>
           </div>
 
+          <!-- Add this after the Water Tracker Card -->
+          <div class="card">
+            <h2><i class="fas fa-utensils"></i> Meal Calculator</h2>
+            <div class="p-4">
+                <div id="foodItemsContainer" class="space-y-4">
+                    <!-- Food items will be added here -->
+                </div>
+                
+                <div class="flex justify-between mt-4">
+                    <button onclick="addFoodItem()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                    <button onclick="calculateNutrients()" class="btn btn-success">
+                        <i class="fas fa-calculator"></i> Calculate Nutrients
+                    </button>
+                </div>
+
+                <div id="nutritionResults" class="mt-6 hidden">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+          </div>
+
           <!-- Food Image Analysis Card -->
           <div class="card">
             <h2><i class="fas fa-camera"></i> Food Image Analysis</h2>
 
-            <div class="container mx-auto px-4 py-8">
-              <div class="max-w-4xl mx-auto">
-                <!-- Upload Area -->
-                <div id="uploadArea" class="bg-white rounded-xl shadow-md p-8 mb-8">
-                  <div class="icon-container flex justify-center mb-4">
-                    <i class="fas fa-camera text-6xl text-indigo-500"></i>
-                  </div>
-                  <h3 class="text-2xl font-bold text-center mb-2">Food Image Analysis</h3>
-                  <p class="text-gray-600 text-center mb-6">Upload an image of your food or use the test image</p>
-                  
-                  <div class="button-group flex justify-center space-x-4">
-                    <label class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded-lg cursor-pointer">
-                      <i class="fas fa-upload mr-2"></i> Upload Image
-                      <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
-                    </label>
-                    <button onclick="loadTestImage()" class="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg">
-                      <i class="fas fa-vial mr-2"></i> Test Image
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Loading Indicator -->
-                <div id="loadingIndicator" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
-                  <div class="flex flex-col items-center">
-                    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-500 mb-4"></div>
-                    <p class="text-gray-600">Analyzing your food image...</p>
-                  </div>
-                </div>
-
-                <!-- Preview Container -->
-                <div id="previewContainer" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
-                  <div class="flex justify-center mb-4">
-                    <img id="previewImage" class="max-w-full h-auto rounded-lg" alt="Food preview">
-                  </div>
-                  <div class="flex justify-center space-x-4">
-                    <button onclick="resetImage()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg">
-                      <i class="fas fa-redo mr-2"></i> Try Again
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Results Container -->
-                <div id="resultsContainer" class="hidden bg-white rounded-xl shadow-md p-8">
-                  <h3 class="text-2xl font-bold mb-4">Analysis Results</h3>
-                  <div id="detectionResults" class="space-y-4"></div>
-                </div>
-
-                <!-- Camera Feed (hidden by default) -->
-                <div id="cameraContainer" class="hidden bg-white rounded-xl shadow-md p-8 mb-8">
-                  <div class="flex justify-center mb-4">
-                    <video id="camera-feed" class="max-w-full h-auto rounded-lg" autoplay playsinline></video>
-                  </div>
-                  <div class="flex justify-center space-x-4">
-                    <button onclick="captureImage()" class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded-lg">
-                      <i class="fas fa-camera mr-2"></i> Capture
-                    </button>
-                    <button onclick="stopCamera()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg">
-                      <i class="fas fa-times mr-2"></i> Cancel
-                    </button>
-                  </div>
-                </div>
+            <div class="upload-area" id="uploadArea">
+              <div class="icon-container">
+                <i class="fas fa-camera"></i>
               </div>
+              <h3>Upload Food Image</h3>
+              <p>Take a photo or upload an image of your food</p>
+              <div class="button-group">
+                <label class="btn btn-primary">
+                  <i class="fas fa-upload"></i> Upload Image
+                  <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
+                </label>
+                <button onclick="loadTestImage()" class="btn btn-success">
+                  <i class="fas fa-vial"></i> Test Image
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden">
+              <div class="loading-spinner"></div>
+              <p>Analyzing your food image...</p>
+            </div>
+
+            <!-- Preview Container -->
+            <div id="previewContainer" class="hidden">
+              <img id="previewImage" class="preview-image" alt="Food preview">
+              <button onclick="resetImage()" class="btn btn-outline">
+                <i class="fas fa-redo"></i> Try Again
+              </button>
+            </div>
+
+            <!-- Results Container -->
+            <div id="resultsContainer" class="hidden">
+              <h3>Analysis Results</h3>
+              <div id="detectionResults" class="food-items-container"></div>
             </div>
           </div>
 
           <!-- Today's Meal Card -->
           <div class="card">
             <div class="card-header">
-                <h5 class="card-title">Today's Meal</h5>
-                <button class="btn btn-primary" onclick="openMealForm()">Add Meal</button>
+              <h3 class="card-title">Today's Meals</h3>
+              <button class="btn btn-primary" onclick="openMealForm()">
+                <i class="fas fa-plus"></i> Add Meal
+              </button>
             </div>
-            <div class="card-body">
-                <div id="mealsList" class="meals-list">
-                    <!-- Meals will be displayed here -->
-                </div>
-            </div>
-          </div>
-
-          <!-- Meal Form Modal -->
-          <div id="mealFormModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Add New Meal</h5>
-                    <span class="close" onclick="closeMealForm()">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <form id="mealForm" onsubmit="saveMeal(event)">
-                        <div class="form-group">
-                            <label for="mealType">Meal Type</label>
-                            <select id="mealType" class="form-control" required>
-                                <option value="breakfast">Breakfast</option>
-                                <option value="lunch">Lunch</option>
-                                <option value="dinner">Dinner</option>
-                                <option value="snack">Snack</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="mealName">Meal Name</label>
-                            <input type="text" id="mealName" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mealTime">Time</label>
-                            <input type="time" id="mealTime" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="protein">Protein (g)</label>
-                            <input type="number" id="protein" class="form-control" min="0" step="0.1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="carbs">Carbs (g)</label>
-                            <input type="number" id="carbs" class="form-control" min="0" step="0.1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fats">Fats (g)</label>
-                            <input type="number" id="fats" class="form-control" min="0" step="0.1" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Meal</button>
-                    </form>
-                </div>
+            <div id="mealsList" class="meal-list">
+              <!-- Meals will be displayed here -->
             </div>
           </div>
         </div>
@@ -1238,9 +1190,7 @@
         <div class="side-column">
           <!-- Nutrition Recommendations Card -->
           <div class="card">
-            <h2>
-              <i class="fas fa-lightbulb"></i> Personalized Recommendations
-            </h2>
+            <h2><i class="fas fa-lightbulb"></i> Personalized Recommendations</h2>
 
             <div class="suggestions-section">
               <h3>Macro Distribution</h3>
@@ -1300,11 +1250,7 @@
                 <div class="suggestion-title">
                   <i class="fas fa-bolt"></i> Increase Your Iron Intake
                 </div>
-                <p>
-                  Your iron levels are lower than recommended. Consider adding
-                  these iron-rich foods to your meals:
-                </p>
-
+                <p>Your iron levels are lower than recommended. Consider adding these iron-rich foods to your meals:</p>
                 <div class="alternative-items">
                   <div class="alternative-item">
                     <i class="fas fa-check-circle"></i>
@@ -1320,70 +1266,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="suggestion-card">
-                <div class="suggestion-title">
-                  <i class="fas fa-exchange-alt"></i> Try These Alternatives
-                </div>
-                <p>
-                  Instead of your usual breakfast, consider these healthier
-                  options:
-                </p>
-
-                <div class="alternative-items">
-                  <div class="alternative-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Greek yogurt with nuts and berries</span>
-                    <span class="calorie-save">-120 cal</span>
-                  </div>
-                  <div class="alternative-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Avocado toast with egg</span>
-                    <span class="calorie-save">-85 cal</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Upcoming Meal Plan Card -->
-          <div class="card">
-            <h2><i class="fas fa-calculator"></i> Nutrient Calculator</h2>
-
-            <div class="meal-list">
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Breakfast</h4>
-                    <p>Protein pancakes with berries</p>
-                  </div>
-                </div>
-                <div class="meal-calories">340 cal</div>
-              </div>
-
-              <div class="meal-item">
-                <div class="meal-info">
-                  <div class="meal-icon">
-                    <i class="fas fa-cloud-sun"></i>
-                  </div>
-                  <div class="meal-details">
-                    <h4>Tomorrow's Lunch</h4>
-                    <p>Quinoa bowl with veggies and tofu</p>
-                  </div>
-                </div>
-                <div class="meal-calories">450 cal</div>
-              </div>
-
-                    <div class="nutrition-results">
-                        <h3>Total Nutrition Information</h3>
-                        <div id="nutritionDetails" class="nutrition-details">
-                            <p>Add food items to see nutrition information</p>
-                        </div>
-                    </div>
-                </div>
             </div>
           </div>
 
@@ -1391,12 +1273,111 @@
           <div class="card">
             <h2><i class="fas fa-chart-line"></i> Weekly Progress</h2>
             <div class="export-container">
-              <button class="btn btn-success" onclick="exportMealData()">
+              <button class="btn btn-success" onclick="exportMealReport()">
                 <i class="fas fa-file-excel"></i> Export Meal Report
               </button>
             </div>
           </div>
+
+          <!-- Upcoming Meal Plan Card -->
+          <!-- <div class="card">
+            <h2><i class="fas fa-calendar"></i> Upcoming Meal Plan</h2>
+            <div class="meal-plan">
+              <div class="meal-day">
+                <h3>Monday</h3>
+                <div class="meal-items">
+                  <div class="meal-item">
+                    <div class="meal-header">
+                      <h4>Breakfast</h4>
+                      <span class="meal-time">8:00 AM</span>
+                    </div>
+                    <div class="food-items">
+                      <div class="food-item">
+                        <span class="food-name">Oatmeal with Berries</span>
+                        <span class="food-calories">320 cal</span>
+                      </div>
+                      <div class="food-item">
+                        <span class="food-name">Greek Yogurt</span>
+                        <span class="food-calories">150 cal</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="meal-item">
+                    <div class="meal-header">
+                      <h4>Lunch</h4>
+                      <span class="meal-time">12:30 PM</span>
+                    </div>
+                    <div class="food-items">
+                      <div class="food-item">
+                        <span class="food-name">Grilled Chicken Salad</span>
+                        <span class="food-calories">450 cal</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            <!-- </div>
+          </div>
         </div>
+      </div>
+    </div> -->
+
+    <!-- Meal Form Modal -->
+    <div id="mealFormModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center backdrop-blur-sm">
+      <div class="bg-white rounded-xl p-6 w-full max-w-md transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg mr-3">
+              <i class="fas fa-utensils text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800">Add New Meal</h3>
+          </div>
+          <button onclick="closeMealForm()" class="text-gray-500 hover:text-gray-700 transition-colors duration-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="mealForm" class="space-y-4" onsubmit="saveMeal(event)">
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Meal Type</label>
+            <select id="mealType" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+              <option value="">Select meal type</option>
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Meal Name</label>
+            <input type="text" id="mealName" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="e.g., Grilled Chicken Salad" required>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+            <input type="time" id="mealTime" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Protein (g)</label>
+              <input type="number" id="protein" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" min="0" step="0.1" required>
+            </div>
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Carbs (g)</label>
+              <input type="number" id="carbs" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" min="0" step="0.1" required>
+            </div>
+            <div class="transform transition-all duration-300 hover:scale-[1.02]">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Fats (g)</label>
+              <input type="number" id="fats" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" min="0" step="0.1" required>
+            </div>
+          </div>
+          <div class="transform transition-all duration-300 hover:scale-[1.02]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+            <textarea id="mealNotes" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" rows="2" placeholder="Add any additional notes about the meal..."></textarea>
+          </div>
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg transition-all duration-300 shadow hover:shadow-lg hover:scale-[1.02]">
+  Save Meal
+</button>
+
+        </form>
       </div>
     </div>
 
@@ -1928,6 +1909,459 @@
           showNotification('Failed to load test image', 'error');
         }
       }
+
+      // Meal management
+      let meals = JSON.parse(localStorage.getItem('meals')) || [];
+      
+      function openMealForm() {
+        const modal = document.getElementById('mealFormModal');
+        const modalContent = document.getElementById('modalContent');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+          modalContent.classList.remove('scale-95', 'opacity-0');
+          modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+      }
+
+      function closeMealForm() {
+        const modal = document.getElementById('mealFormModal');
+        const modalContent = document.getElementById('modalContent');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }, 300);
+      }
+
+      function createMealElement(meal) {
+        const calories = (meal.protein * 4) + (meal.carbs * 4) + (meal.fats * 9);
+        const mealTypeIcon = {
+          breakfast: 'fa-sun',
+          lunch: 'fa-cloud-sun',
+          dinner: 'fa-moon',
+          snack: 'fa-cookie'
+        }[meal.type];
+
+        return `
+          <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02]" data-meal-id="${meal.id}">
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex items-center">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg mr-3">
+                  <i class="fas ${mealTypeIcon} text-white"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-gray-800">${meal.name}</h4>
+                  <p class="text-sm text-gray-500">${meal.type.charAt(0).toUpperCase() + meal.type.slice(1)} • ${meal.time}</p>
+                </div>
+              </div>
+              <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                ${calories} cal
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mb-3">
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Protein</p>
+                <p class="font-medium text-blue-600">${meal.protein}g</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Carbs</p>
+                <p class="font-medium text-green-600">${meal.carbs}g</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Fats</p>
+                <p class="font-medium text-yellow-600">${meal.fats}g</p>
+              </div>
+            </div>
+            ${meal.notes ? `
+              <div class="text-sm text-gray-600 mt-2">
+                <i class="fas fa-info-circle mr-1"></i> ${meal.notes}
+              </div>
+            ` : ''}
+            <div class="flex justify-end space-x-2 mt-3">
+              <button onclick="editMeal('${meal.id}')" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteMeal('${meal.id}')" class="text-red-500 hover:text-red-600 transition-colors duration-300">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function updateMealsList() {
+        const mealsContainer = document.getElementById('mealsList');
+        if (meals.length === 0) {
+          mealsContainer.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-utensils text-4xl mb-3"></i>
+              <p>No meals added yet</p>
+              <button onclick="openMealForm()" class="mt-3 text-blue-500 hover:text-blue-600">
+                <i class="fas fa-plus mr-1"></i> Add your first meal
+              </button>
+            </div>
+          `;
+          return;
+        }
+        mealsContainer.innerHTML = meals.map(meal => createMealElement(meal)).join('');
+      }
+
+      function saveMeal(event) {
+        event.preventDefault();
+        
+        const newMeal = {
+          id: Date.now().toString(),
+          type: document.getElementById('mealType').value,
+          name: document.getElementById('mealName').value,
+          time: document.getElementById('mealTime').value,
+          protein: parseFloat(document.getElementById('protein').value),
+          carbs: parseFloat(document.getElementById('carbs').value),
+          fats: parseFloat(document.getElementById('fats').value),
+          notes: document.getElementById('mealNotes').value,
+          createdAt: new Date().toISOString()
+        };
+        
+        meals.push(newMeal);
+        localStorage.setItem('meals', JSON.stringify(meals));
+        
+        updateMealsList();
+        closeMealForm();
+        event.target.reset();
+      }
+
+      function editMeal(mealId) {
+        const meal = meals.find(m => m.id === mealId);
+        if (!meal) return;
+        
+        document.getElementById('mealType').value = meal.type;
+        document.getElementById('mealName').value = meal.name;
+        document.getElementById('mealTime').value = meal.time;
+        document.getElementById('protein').value = meal.protein;
+        document.getElementById('carbs').value = meal.carbs;
+        document.getElementById('fats').value = meal.fats;
+        document.getElementById('mealNotes').value = meal.notes || '';
+        
+        // Remove the old meal
+        meals = meals.filter(m => m.id !== mealId);
+        
+        openMealForm();
+      }
+
+      function deleteMeal(mealId) {
+        if (confirm('Are you sure you want to delete this meal?')) {
+          meals = meals.filter(meal => meal.id !== mealId);
+          localStorage.setItem('meals', JSON.stringify(meals));
+          updateMealsList();
+        }
+      }
+
+      // Initialize
+      document.addEventListener('DOMContentLoaded', () => {
+        updateMealsList();
+      });
+
+      // Meal Plan Calculator functionality
+      let foodItems = [];
+
+      function createFoodItemElement(index) {
+        return `
+          <div class="food-item bg-white rounded-lg p-4 shadow-sm" data-index="${index}">
+            <div class="flex items-center space-x-4">
+              <div class="flex-1">
+                <input type="text" 
+                       class="food-name w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" 
+                       placeholder="Enter food item name"
+                       onkeyup="searchFoodItems(this)">
+                <input type="hidden" class="food-id" value="">
+                <div class="food-suggestions hidden absolute z-10 w-full bg-white border rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto"></div>
+              </div>
+              <div class="w-32">
+                <input type="number" 
+                       class="food-quantity w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" 
+                       placeholder="Quantity"
+                       min="0"
+                       step="0.1"
+                       value="100">
+              </div>
+              <div class="w-24">
+                <select class="food-unit w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+                  <option value="g">g</option>
+                  <option value="oz">oz</option>
+                  <option value="cup">cup</option>
+                  <option value="tbsp">tbsp</option>
+                  <option value="tsp">tsp</option>
+                </select>
+              </div>
+              <button onclick="removeFoodItem(${index})" class="text-red-500 hover:text-red-600 transition-colors duration-300">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function addFoodItem() {
+        const container = document.getElementById('foodItemsContainer');
+        const index = container.children.length;
+        container.insertAdjacentHTML('beforeend', createFoodItemElement(index));
+      }
+
+      function removeFoodItem(index) {
+        const item = document.querySelector(`.food-item[data-index="${index}"]`);
+        if (item) {
+          item.remove();
+        }
+      }
+
+      async function searchFoodItems(input) {
+        const searchTerm = input.value.toLowerCase();
+        if (searchTerm.length < 2) return;
+
+        try {
+          const response = await fetch(`http://localhost:5000/api/food/search?query=${encodeURIComponent(searchTerm)}`);
+          if (!response.ok) throw new Error('Failed to fetch food items');
+          
+          const suggestions = await response.json();
+          const suggestionsDiv = input.parentElement.querySelector('.food-suggestions');
+          
+          if (suggestions.length > 0) {
+            suggestionsDiv.innerHTML = suggestions.map(food => `
+              <div class="p-2 hover:bg-gray-100 cursor-pointer" onclick="selectFoodItem(this, '${food.name}', ${food.id})">
+                ${food.name}
+              </div>
+            `).join('');
+            suggestionsDiv.classList.remove('hidden');
+          } else {
+            suggestionsDiv.classList.add('hidden');
+          }
+        } catch (error) {
+          console.error('Error searching food items:', error);
+        }
+      }
+
+      function selectFoodItem(element, name, id) {
+        const foodItem = element.closest('.food-item');
+        const nameInput = foodItem.querySelector('.food-name');
+        const idInput = foodItem.querySelector('.food-id');
+        
+        nameInput.value = name;
+        idInput.value = id;
+        foodItem.querySelector('.food-suggestions').classList.add('hidden');
+      }
+
+      async function calculateNutrients() {
+        const foodItems = [];
+        const foodRows = document.querySelectorAll('.food-item');
+        
+        foodRows.forEach(row => {
+          const foodId = row.querySelector('.food-id').value;
+          const foodName = row.querySelector('.food-name').value;
+          const quantity = parseFloat(row.querySelector('.food-quantity').value) || 0;
+          const unit = row.querySelector('.food-unit').value;
+          
+          if (foodId && quantity > 0) {
+            foodItems.push({
+              id: parseInt(foodId),
+              name: foodName,
+              quantity: quantity,
+              unit: unit
+            });
+          }
+        });
+        
+        if (foodItems.length === 0) {
+          alert('Please add at least one food item with a quantity greater than 0');
+          return;
+        }
+        
+        try {
+          const response = await fetch('http://localhost:5000/api/food/calculate-nutrients', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ foodItems: foodItems })
+          });
+
+          if (!response.ok) throw new Error('Failed to calculate nutrients');
+          
+          const data = await response.json();
+          displayNutritionResults(data);
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error calculating nutrients: ' + error.message);
+        }
+      }
+
+      function displayNutritionResults(data) {
+        const resultsDiv = document.getElementById('nutritionResults');
+        const total = data.total;
+        const items = data.items;
+        
+        let html = `
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <h3 class="text-lg font-semibold mb-4">Total Nutrition</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Calories</p>
+                <p class="text-xl font-bold text-blue-600">${Math.round(total.calories)} kcal</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Protein</p>
+                <p class="text-xl font-bold text-green-600">${Math.round(total.protein * 10) / 10}g</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Carbs</p>
+                <p class="text-xl font-bold text-yellow-600">${Math.round(total.carbs * 10) / 10}g</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500">Fats</p>
+                <p class="text-xl font-bold text-red-600">${Math.round(total.fats * 10) / 10}g</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <h3 class="text-lg font-semibold mb-4">Detailed Breakdown</h3>
+            <div class="space-y-2">
+        `;
+        
+        items.forEach(item => {
+          html += `
+            <div class="bg-white rounded-lg p-3 shadow-sm">
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="font-medium">${item.name}</p>
+                  <p class="text-sm text-gray-500">${item.quantity}${item.unit}</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-medium">${Math.round(item.calories)} kcal</p>
+                  <p class="text-sm text-gray-500">
+                    P: ${Math.round(item.protein * 10) / 10}g | 
+                    C: ${Math.round(item.carbs * 10) / 10}g | 
+                    F: ${Math.round(item.fats * 10) / 10}g
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        html += `
+            </div>
+          </div>
+        `;
+        
+        resultsDiv.innerHTML = html;
+        resultsDiv.classList.remove('hidden');
+      }
+
+      // Initialize with one food item
+      document.addEventListener('DOMContentLoaded', () => {
+        addFoodItem();
+      });
+
+      function resetImage() {
+        const uploadArea = document.getElementById('uploadArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Reset all containers
+        uploadArea.querySelector('.icon-container').style.display = 'flex';
+        uploadArea.querySelector('h3').style.display = 'block';
+        uploadArea.querySelector('p').style.display = 'block';
+        uploadArea.querySelector('.button-group').style.display = 'block';
+        
+        previewContainer.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        loadingIndicator.style.display = 'none';
+        
+        // Clear the preview image
+        document.getElementById('previewImage').src = '';
+      }
+
+      async function exportMealReport() {
+        try {
+            // Get meals from localStorage
+            const meals = JSON.parse(localStorage.getItem('meals')) || [];
+            
+            if (meals.length === 0) {
+                alert('No meals to export. Please add some meals first.');
+                return;
+            }
+
+            // Format meals data for export
+            const mealsData = meals.map(meal => ({
+                'Meal Name': meal.name,
+                'Type': meal.type.charAt(0).toUpperCase() + meal.type.slice(1),
+                'Time': meal.time,
+                'Calories': Math.round((meal.protein * 4) + (meal.carbs * 4) + (meal.fats * 9)),
+                'Protein (g)': meal.protein,
+                'Carbs (g)': meal.carbs,
+                'Fats (g)': meal.fats,
+                'Notes': meal.notes || ''
+            }));
+
+            // Calculate totals
+            const totals = mealsData.reduce((acc, meal) => ({
+                'Calories': acc['Calories'] + meal['Calories'],
+                'Protein (g)': acc['Protein (g)'] + meal['Protein (g)'],
+                'Carbs (g)': acc['Carbs (g)'] + meal['Carbs (g)'],
+                'Fats (g)': acc['Fats (g)'] + meal['Fats (g)']
+            }), {
+                'Calories': 0,
+                'Protein (g)': 0,
+                'Carbs (g)': 0,
+                'Fats (g)': 0
+            });
+
+            // Add totals row
+            mealsData.push({
+                'Meal Name': 'TOTAL',
+                'Type': '',
+                'Time': '',
+                'Calories': Math.round(totals['Calories']),
+                'Protein (g)': Math.round(totals['Protein (g)'] * 10) / 10,
+                'Carbs (g)': Math.round(totals['Carbs (g)'] * 10) / 10,
+                'Fats (g)': Math.round(totals['Fats (g)'] * 10) / 10,
+                'Notes': ''
+            });
+
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(mealsData);
+
+            // Set column widths
+            const wscols = [
+                {wch: 20}, // Meal Name
+                {wch: 10}, // Type
+                {wch: 10}, // Time
+                {wch: 10}, // Calories
+                {wch: 12}, // Protein
+                {wch: 12}, // Carbs
+                {wch: 12}, // Fats
+                {wch: 30}  // Notes
+            ];
+            ws['!cols'] = wscols;
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Meal Report");
+
+            // Generate filename with timestamp
+            const timestamp = new Date().toISOString().slice(0,19).replace(/[:]/g, '');
+            const filename = `meal_report_${timestamp}.xlsx`;
+
+            // Save file
+            XLSX.writeFile(wb, filename);
+
+        } catch (error) {
+            console.error('Error exporting meal report:', error);
+            alert('Failed to export meal report. Please try again.');
+        }
+    }
     </script>
   </body>
 </html>
